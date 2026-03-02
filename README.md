@@ -287,6 +287,27 @@ This removes RECON, launchers, auto-update jobs, and shell config entries. Your 
 
 ---
 
+## Support the Project
+
+Project RECON is free and open source. If it saves you time, consider supporting development:
+
+<p align="center">
+  <a href="https://github.com/sponsors/newbiehackler"><img src="https://img.shields.io/badge/GitHub_Sponsors-Support-ff0000?style=for-the-badge&logo=github" alt="GitHub Sponsors"></a>
+  <a href="https://venmo.com/u/Travis-LeFevre-3"><img src="https://img.shields.io/badge/Venmo-Tip-3D95CE?style=for-the-badge&logo=venmo" alt="Venmo"></a>
+  <a href="https://cash.app/$Travis0706"><img src="https://img.shields.io/badge/Cash_App-Tip-00C244?style=for-the-badge&logo=cashapp" alt="Cash App"></a>
+</p>
+
+### Premium Services
+
+| Service | What You Get | Contact |
+|---------|-------------|--------|
+| **Custom Tool Integration** | I'll add your proprietary tools to RECON | DM on GitHub |
+| **Investigation Consulting** | OSINT/forensics guidance for your case | DM on GitHub |
+| **Custom Plugins** | Built-to-order RECON plugins for your workflow | DM on GitHub |
+| **Training** | 1-on-1 RECON walkthrough and OSINT training | DM on GitHub |
+
+---
+
 ## Contributing
 
 We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
