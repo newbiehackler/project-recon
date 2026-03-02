@@ -1,0 +1,62 @@
+name: 🔧 Tool Integration Request
+description: Request a new tool to be added to RECON
+labels: ["tool-request"]
+body:
+  - type: input
+    id: tool_name
+    attributes:
+      label: Tool Name
+      placeholder: "e.g. maltego"
+    validations:
+      required: true
+
+  - type: input
+    id: tool_url
+    attributes:
+      label: Tool URL
+      description: GitHub repo or homepage
+      placeholder: "https://github.com/..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install_method
+    attributes:
+      label: Installation Method
+      options:
+        - pip
+        - brew
+        - git clone
+        - binary download
+        - other
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Username Enumeration
+        - Email Investigation
+        - Phone Lookup
+        - Network Forensics
+        - Memory Forensics
+        - Disk Forensics
+        - Steganography
+        - Password Recovery
+        - Vulnerability Scanning
+        - Web Application
+        - Wireless Security
+        - Document Analysis
+        - Metadata Extraction
+        - Reverse Engineering
+        - Social Engineering
+        - OSINT Frameworks
+        - Relationship Investigation
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Why should this be included?
+      description: What does this tool do that existing tools don't?
+    validations:
+      required: true

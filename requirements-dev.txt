@@ -1,0 +1,6 @@
+# Project RECON — Development dependencies
+-r requirements.txt
+ruff
+mypy
+pytest
+pytest-asyncio

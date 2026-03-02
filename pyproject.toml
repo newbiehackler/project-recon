@@ -1,0 +1,100 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "project-recon"
+version = "3.0.0"
+description = "Project RECON — Rapid Evidence Collection & OSINT Network. Unified forensics & OSINT workbench orchestrating 40+ tools through a single CLI."
+readme = "README.md"
+license = {text = "CC-BY-SA-4.0"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Newbie_Hackler", email = "newbiehackler@pm.me"},
+]
+keywords = [
+    "osint", "recon", "forensics", "investigation", "enumeration",
+    "social-media", "reconnaissance", "evidence", "cybersecurity",
+    "infosec", "pentesting", "digital-forensics", "threat-intelligence",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Other Audience",
+    "Intended Audience :: Science/Research",
+    "License :: Other/Proprietary License",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: System :: Networking",
+    "Typing :: Typed",
+]
+dependencies = [
+    "aiohttp>=3.9.0",
+    "aiohttp-socks>=0.8.0",
+    "rich>=13.0.0",
+]
+
+[project.optional-dependencies]
+osint = [
+    "sherlock-project",
+    "maigret",
+    "social-analyzer",
+    "socialscan",
+    "holehe",
+    "h8mail",
+    "nexfil",
+    "toutatis",
+]
+forensics = [
+    "volatility3",
+    "oletools",
+    "stegoveritas",
+    "scapy",
+]
+dev = [
+    "ruff",
+    "mypy",
+    "pytest",
+    "pytest-asyncio",
+]
+all = [
+    "project-recon[osint,forensics]",
+]
+
+[project.scripts]
+wmn = "whatsmyname.cli:main"
+recon = "whatsmyname.recon_cli:main"
+
+[project.urls]
+Homepage = "https://github.com/newbiehackler/project-recon"
+Repository = "https://github.com/newbiehackler/project-recon"
+Changelog = "https://github.com/newbiehackler/project-recon/blob/main/CHANGELOG.md"
+Issues = "https://github.com/newbiehackler/project-recon/issues"
+Documentation = "https://github.com/newbiehackler/project-recon#readme"
+
+[tool.setuptools.packages.find]
+include = ["whatsmyname*"]
+
+[tool.setuptools.package-data]
+"whatsmyname.data" = ["*.json"]
+"whatsmyname" = ["../wmn-data.json"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true

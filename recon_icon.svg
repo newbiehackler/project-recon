@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="45%" r="40%">
+      <stop offset="0%" stop-color="#ff0000" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#330000"/>
+      <stop offset="25%" stop-color="#990000"/>
+      <stop offset="50%" stop-color="#ff0000"/>
+      <stop offset="75%" stop-color="#990000"/>
+      <stop offset="100%" stop-color="#330000"/>
+    </linearGradient>
+    <linearGradient id="noiseGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0d0d0d"/>
+      <stop offset="15%" stop-color="#1a1a1a"/>
+      <stop offset="50%" stop-color="#222222"/>
+      <stop offset="85%" stop-color="#1a1a1a"/>
+      <stop offset="100%" stop-color="#0d0d0d"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" fill="#0a0a0a" rx="56"/>
+
+  <!-- Subtle center glow -->
+  <circle cx="256" cy="230" r="190" fill="url(#glow)"/>
+
+  <!-- Noise/scan bands -->
+  <rect x="56" y="58" width="400" height="4" fill="url(#noiseGrad)" rx="2"/>
+  <rect x="72" y="66" width="368" height="2" fill="#111111" rx="1"/>
+  <rect x="56" y="448" width="400" height="4" fill="url(#noiseGrad)" rx="2"/>
+  <rect x="72" y="442" width="368" height="2" fill="#111111" rx="1"/>
+
+  <!-- Targeting bracket corners -->
+  <g stroke="#ff0000" stroke-width="7" fill="none" stroke-linecap="square">
+    <!-- Top-left -->
+    <path d="M56 156 L56 56 L156 56"/>
+    <!-- Top-right -->
+    <path d="M356 56 L456 56 L456 156"/>
+    <!-- Bottom-left -->
+    <path d="M56 356 L56 456 L156 456"/>
+    <!-- Bottom-right -->
+    <path d="M356 456 L456 456 L456 356"/>
+  </g>
+
+  <!-- Crosshair lines -->
+  <g stroke="#1a0000" stroke-width="1.5">
+    <line x1="256" y1="56" x2="256" y2="130"/>
+    <line x1="256" y1="382" x2="256" y2="456"/>
+    <line x1="56" y1="256" x2="130" y2="256"/>
+    <line x1="382" y1="256" x2="456" y2="256"/>
+  </g>
+
+  <!-- Small crosshair ticks at center -->
+  <g stroke="#330000" stroke-width="2">
+    <line x1="246" y1="248" x2="234" y2="248"/>
+    <line x1="266" y1="248" x2="278" y2="248"/>
+    <line x1="256" y1="238" x2="256" y2="226"/>
+    <line x1="256" y1="258" x2="256" y2="270"/>
+  </g>
+
+  <!-- Bold R with gradient -->
+  <text x="256" y="316"
+        font-family="'Courier New', 'Lucida Console', 'Monaco', monospace"
+        font-weight="900"
+        font-size="280"
+        fill="url(#rGrad)"
+        text-anchor="middle"
+        letter-spacing="-10">R</text>
+
+  <!-- RECON subtitle -->
+  <text x="256" y="416"
+        font-family="'Courier New', 'Lucida Console', 'Monaco', monospace"
+        font-weight="700"
+        font-size="44"
+        fill="#550000"
+        text-anchor="middle"
+        letter-spacing="18">RECON</text>
+
+  <!-- Inner frame lines (subtle) -->
+  <rect x="78" y="78" width="356" height="356" rx="4"
+        stroke="#111111" stroke-width="1" fill="none"/>
+</svg>
