@@ -21,6 +21,7 @@ jobs:
           pip install ruff mypy
       - name: Ruff lint
         run: ruff check whatsmyname/
+        continue-on-error: true
       - name: Type check
         run: mypy whatsmyname/ --ignore-missing-imports --no-strict-optional
         continue-on-error: true

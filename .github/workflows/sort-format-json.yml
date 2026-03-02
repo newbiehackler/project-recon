@@ -6,6 +6,9 @@ on:
       - 'wmn-data.json'
       - 'wmn-data-schema.json'
 
+permissions:
+  contents: write
+
 jobs:
   sort-and-format-json:
     name: Sort and Format JSON Files
