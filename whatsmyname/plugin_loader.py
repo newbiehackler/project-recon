@@ -157,3 +157,102 @@ def install_sample_plugin() -> Path:
     if not sample_path.exists():
         sample_path.write_text(SAMPLE_PLUGIN)
     return sample_path
+
+
+# ---------------------------------------------------------------------------
+# Marketplace
+# ---------------------------------------------------------------------------
+
+REGISTRY_URL = "https://raw.githubusercontent.com/newbiehackler/project-recon/main/marketplace/registry.json"
+
+
+def _fetch_registry() -> dict:
+    """Fetch the plugin marketplace registry."""
+    import json
+    import urllib.request
+    try:
+        req = urllib.request.Request(REGISTRY_URL, headers={"User-Agent": "RECON/3.0"})
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            return json.loads(resp.read().decode())
+    except Exception as e:
+        return {"error": str(e), "plugins": []}
+
+
+def marketplace_search(query: str | None = None) -> list[dict]:
+    """Search the marketplace registry. Returns matching plugins."""
+    registry = _fetch_registry()
+    plugins = registry.get("plugins", [])
+    if not query:
+        return plugins
+    q = query.lower()
+    return [
+        p for p in plugins
+        if q in p["name"].lower()
+        or q in p["description"].lower()
+        or any(q in t.lower() for t in p.get("tags", []))
+    ]
+
+
+def marketplace_install(plugin_name: str) -> dict:
+    """Install a plugin from the marketplace by name."""
+    import urllib.request
+    registry = _fetch_registry()
+    if registry.get("error"):
+        return {"success": False, "error": f"Cannot reach registry: {registry['error']}"}
+
+    # Find the plugin
+    match = None
+    for p in registry.get("plugins", []):
+        if p["name"].lower() == plugin_name.lower():
+            match = p
+            break
+
+    if not match:
+        return {"success": False, "error": f"Plugin '{plugin_name}' not found in marketplace"}
+
+    # Check if already installed
+    ensure_plugin_dir()
+    # Derive filename from download URL
+    filename = match["download_url"].split("/")[-1]
+    dest = PLUGIN_DIR / filename
+
+    if dest.exists():
+        return {"success": False, "error": f"Already installed at {dest}"}
+
+    # Download
+    try:
+        req = urllib.request.Request(match["download_url"], headers={"User-Agent": "RECON/3.0"})
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            content = resp.read()
+        dest.write_bytes(content)
+        return {
+            "success": True,
+            "plugin": match["name"],
+            "version": match["version"],
+            "path": str(dest),
+            "tools": match.get("tools_provided", []),
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def marketplace_uninstall(plugin_name: str) -> dict:
+    """Remove an installed marketplace plugin."""
+    registry = _fetch_registry()
+    match = None
+    for p in registry.get("plugins", []):
+        if p["name"].lower() == plugin_name.lower():
+            match = p
+            break
+
+    if not match:
+        return {"success": False, "error": f"Plugin '{plugin_name}' not found in registry"}
+
+    filename = match["download_url"].split("/")[-1]
+    dest = PLUGIN_DIR / filename
+
+    if not dest.exists():
+        return {"success": False, "error": f"Plugin not installed"}
+
+    dest.unlink()
+    return {"success": True, "plugin": plugin_name, "removed": str(dest)}

@@ -297,14 +297,19 @@ Project RECON is free and open source. If it saves you time, consider supporting
   <a href="https://cash.app/$Travis0706"><img src="https://img.shields.io/badge/Cash_App-Tip-00C244?style=for-the-badge&logo=cashapp" alt="Cash App"></a>
 </p>
 
-### Premium Services
+### Plugin Marketplace (Coming Soon)
 
-| Service | What You Get | Contact |
-|---------|-------------|--------|
-| **Custom Tool Integration** | I'll add your proprietary tools to RECON | DM on GitHub |
-| **Investigation Consulting** | OSINT/forensics guidance for your case | DM on GitHub |
-| **Custom Plugins** | Built-to-order RECON plugins for your workflow | DM on GitHub |
-| **Training** | 1-on-1 RECON walkthrough and OSINT training | DM on GitHub |
+Build and sell your own RECON plugins. Drop a `.py` file in `~/.recon/plugins/` and it just works.
+
+**For plugin developers:**
+- Write a plugin → submit it to the marketplace → earn money every time someone downloads it
+- Zero gatekeeping — if it works with RECON, it ships
+
+**For investigators:**
+- Browse community plugins for specialized tools and workflows
+- One-command install: `recon plugins install <name>`
+
+Want early access? [Star the repo](https://github.com/newbiehackler/project-recon) and watch for updates.
 
 ---
 

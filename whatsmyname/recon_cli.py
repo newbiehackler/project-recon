@@ -505,6 +505,89 @@ def cmd_list_tools() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Subcommand: plugins (marketplace)
+# ---------------------------------------------------------------------------
+
+def _handle_plugins(args: list[str]) -> None:
+    """Handle all plugins subcommands: list, install, search, uninstall."""
+    from whatsmyname.plugin_loader import (
+        list_plugins, install_sample_plugin,
+        marketplace_search, marketplace_install, marketplace_uninstall,
+    )
+
+    if not args or args[0] == "list":
+        # Default: show installed plugins
+        install_sample_plugin()
+        plugins = list_plugins()
+        if not plugins:
+            console.print("[yellow]No active plugins in ~/.recon/plugins/[/yellow]")
+            console.print("[dim]Browse the marketplace: recon plugins search[/dim]")
+            console.print("[dim]Install a plugin:       recon plugins install <name>[/dim]")
+        else:
+            table = Table(title="Installed Plugins", border_style="dim")
+            table.add_column("File", style="red")
+            table.add_column("Tools")
+            table.add_column("Status")
+            for p in plugins:
+                status_str = "[green]\u2713 ok[/green]" if p["status"] == "ok" else f"[red]\u2717 {p['status']}[/red]"
+                table.add_row(p["file"], ", ".join(p["tools"]), status_str)
+            console.print(table)
+        return
+
+    action = args[0]
+
+    if action == "search":
+        query = args[1] if len(args) > 1 else None
+        console.print("[dim]Fetching marketplace registry...[/dim]")
+        results = marketplace_search(query)
+        if not results:
+            console.print("[yellow]No plugins found.[/yellow]")
+            return
+        table = Table(title="Plugin Marketplace", border_style="red", expand=True)
+        table.add_column("Name", style="bold red")
+        table.add_column("Description")
+        table.add_column("Category", style="dim")
+        table.add_column("Tier")
+        table.add_column("Version", justify="right", style="dim")
+        for p in results:
+            tier = "[green]FREE[/green]" if p.get("tier") == "free" else f"[yellow]${p.get('price', '?')}[/yellow]"
+            table.add_row(p["name"], p["description"][:60], p.get("category", ""), tier, p.get("version", ""))
+        console.print(table)
+        console.print(f"\n[dim]Install with: recon plugins install <name>[/dim]")
+
+    elif action == "install":
+        if len(args) < 2:
+            console.print("[red]Usage: recon plugins install <plugin-name>[/red]")
+            console.print("[dim]Browse: recon plugins search[/dim]")
+            return
+        name = args[1]
+        console.print(f"[dim]Installing {name}...[/dim]")
+        result = marketplace_install(name)
+        if result["success"]:
+            console.print(f"[green]\u2713 Installed {result['plugin']} v{result['version']}[/green]")
+            console.print(f"[dim]  Path: {result['path']}[/dim]")
+            if result.get("tools"):
+                console.print(f"[dim]  Tools added: {', '.join(result['tools'])}[/dim]")
+        else:
+            console.print(f"[red]\u2717 {result['error']}[/red]")
+
+    elif action == "uninstall" or action == "remove":
+        if len(args) < 2:
+            console.print("[red]Usage: recon plugins uninstall <plugin-name>[/red]")
+            return
+        name = args[1]
+        result = marketplace_uninstall(name)
+        if result["success"]:
+            console.print(f"[green]\u2713 Removed {result['plugin']}[/green]")
+        else:
+            console.print(f"[red]\u2717 {result['error']}[/red]")
+
+    else:
+        console.print(f"[red]Unknown plugins command: {action}[/red]")
+        console.print("[dim]Available: list, search, install <name>, uninstall <name>[/dim]")
+
+
+# ---------------------------------------------------------------------------
 # Subcommand: update
 # ---------------------------------------------------------------------------
 
@@ -791,22 +874,7 @@ def main(argv: list[str] | None = None) -> None:
                 table.add_row(t["name"], t["description"], tools_str, ", ".join(t["tags"]))
             console.print(table)
         elif subcmd == "plugins":
-            from whatsmyname.plugin_loader import list_plugins, install_sample_plugin
-            install_sample_plugin()
-            plugins = list_plugins()
-            if not plugins:
-                console.print("[yellow]No active plugins in ~/.recon/plugins/[/yellow]")
-                console.print("[dim]A sample template was created at ~/.recon/plugins/_example.py.disabled[/dim]")
-                console.print("[dim]Rename it (remove .disabled) and customize to add your own tools.[/dim]")
-            else:
-                table = Table(title="Loaded Plugins", border_style="dim")
-                table.add_column("File", style="red")
-                table.add_column("Tools")
-                table.add_column("Status")
-                for p in plugins:
-                    status_str = "[green]✓ ok[/green]" if p["status"] == "ok" else f"[red]✗ {p['status']}[/red]"
-                    table.add_row(p["file"], ", ".join(p["tools"]), status_str)
-                console.print(table)
+            _handle_plugins(raw_args[1:])
         elif subcmd == "update":
             cmd_update(raw_args[1:])
         elif subcmd == "shell":

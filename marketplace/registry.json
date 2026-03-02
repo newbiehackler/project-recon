@@ -1,0 +1,49 @@
+{
+  "version": "1.0.0",
+  "registry_url": "https://raw.githubusercontent.com/newbiehackler/project-recon/main/marketplace/registry.json",
+  "updated": "2026-03-02",
+  "plugins": [
+    {
+      "name": "social-deep-dive",
+      "version": "1.0.0",
+      "author": "newbiehackler",
+      "description": "Deep social media profiling — extracts bios, follower counts, post frequency, and cross-platform identity links from 15+ platforms.",
+      "category": "Username Enumeration",
+      "tags": ["social-media", "profiling", "osint"],
+      "tier": "free",
+      "price": 0,
+      "download_url": "https://raw.githubusercontent.com/newbiehackler/project-recon/main/marketplace/plugins/social_deep_dive.py",
+      "min_recon_version": "3.0.0",
+      "input_types": ["username"],
+      "tools_provided": ["social-deep-dive"]
+    },
+    {
+      "name": "breach-check",
+      "version": "1.0.0",
+      "author": "newbiehackler",
+      "description": "Check if an email or username appears in known data breaches. Queries multiple breach databases and returns exposure details.",
+      "category": "Email Investigation",
+      "tags": ["breach", "email", "password", "exposure"],
+      "tier": "free",
+      "price": 0,
+      "download_url": "https://raw.githubusercontent.com/newbiehackler/project-recon/main/marketplace/plugins/breach_check.py",
+      "min_recon_version": "3.0.0",
+      "input_types": ["email", "username"],
+      "tools_provided": ["breach-check"]
+    },
+    {
+      "name": "geolocation-osint",
+      "version": "1.0.0",
+      "author": "newbiehackler",
+      "description": "Extract and analyze geolocation data from photos, social media posts, and IP addresses. Maps digital footprints to physical locations.",
+      "category": "Metadata Extraction",
+      "tags": ["geolocation", "exif", "gps", "metadata"],
+      "tier": "free",
+      "price": 0,
+      "download_url": "https://raw.githubusercontent.com/newbiehackler/project-recon/main/marketplace/plugins/geolocation_osint.py",
+      "min_recon_version": "3.0.0",
+      "input_types": ["username"],
+      "tools_provided": ["geo-osint"]
+    }
+  ]
+}
