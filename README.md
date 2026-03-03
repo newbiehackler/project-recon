@@ -1,8 +1,4 @@
-<p align="center">
-  <img src="docs/assets/banner.png" alt="Project RECON Banner" width="700">
-</p>
-
-<h1 align="center">Project RECON</h1>
+<h1 align="center">🔴 Project RECON</h1>
 <h3 align="center">Rapid Evidence Collection & OSINT Network</h3>
 
 <p align="center">
@@ -109,7 +105,7 @@ bash install.sh
 
 ```bash
 git clone https://github.com/newbiehackler/project-recon.git
-cd project-recon/WhatsMyName
+cd project-recon
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e .
 pip install sherlock-project maigret social-analyzer socialscan holehe h8mail nexfil
@@ -156,16 +152,97 @@ recon johndoe --dry-run
 ## Subcommands
 
 ```
-recon <target>          Search a username/email/phone
-recon inventory         Full system tool audit
-recon learn <tool>      Beginner-friendly tool guide
-recon suggest <tool>    What to run next and why
-recon categories        Browse tools by category
-recon workflows         Investigation workflow templates
-recon templates         Predefined scan profiles
-recon plugins           List loaded plugins
-recon update            Update all tools & dependencies
-recon shell             Interactive investigation REPL
+recon <target>                  Search a username/email/phone
+recon inventory                 Full system tool audit
+recon learn <tool>              Beginner-friendly tool guide
+recon suggest <tool>            What to run next and why
+recon categories                Browse tools by category
+recon workflows                 Investigation workflow templates
+recon templates                 Predefined scan profiles
+recon update                    Update all tools & dependencies
+recon shell                     Interactive investigation REPL
+```
+
+### Plugin Marketplace Commands
+
+```
+recon plugins                   List installed plugins
+recon plugins search [query]    Browse marketplace
+recon plugins install <name>    Install a plugin (--key KEY for paid)
+recon plugins uninstall <name>  Remove a plugin
+recon plugins create <name>     Scaffold a new plugin
+recon plugins validate <file>   Validate before submission
+recon plugins submit <file>     Submit to marketplace via GitHub Issue
+```
+
+### All Flags
+
+```
+Core:
+  --type username|email|phone   Override input auto-detection
+  --tools wmn,sherlock,...      Run only specific tools
+  --timeout 120                 Per-tool timeout in seconds
+  -o json|csv|html              Export report format
+  --output-file report.json     Custom output path
+  --no-banner                   Skip the ASCII banner
+  --list-tools                  Show all tools + install status
+  -V, --version                 Show version
+
+Scan Control:
+  --deep                        All tools, 2x timeouts
+  --quick                       Top 3 fastest tools only
+  --passive                     Non-intrusive tools only
+  --dry-run                     Preview without executing
+  --template full-osint         Use predefined scan profile
+  --parallel 5                  Limit concurrent tools
+  --retries 2                   Retry failed tools
+  --proxy http://127.0.0.1:8080 Route through proxy
+  --tor                         Route through Tor
+
+Input:
+  -f targets.txt                Read targets from file
+  --stdin                       Read from stdin
+  --no-email-expand             Skip email variant generation
+
+Output:
+  --raw                         Show raw tool stdout
+  --save-raw ./raw_output       Save raw outputs to directory
+  --no-color                    Plain text (no ANSI colors)
+  --open                        Auto-open HTML report in browser
+  --pdf                         Export as PDF
+  --markdown                    Export as Markdown
+
+Investigation:
+  --session case001             Create/resume named session
+  --case-id CASE-2024-001       Tag with case ID
+  --notes "initial recon"       Attach notes
+  --examiner "Agent X"          Tag examiner name
+  --discover                    Suggest complementary tools after scan
+  --enrich                      Auto-enrich findings (DNS, whois)
+  --score                       Calculate exposure risk score (1-100)
+  --correlate                   Cross-reference across tools
+  --diff previous_scan.json     Compare against prior scan
+
+Chain of Custody:
+  --evidence-bag ./evidence     Forensic evidence bag directory
+  --chain-of-custody            Timestamped action logging
+  --hash-verify                 SHA-256 hash all outputs
+
+OpSec:
+  --opsec-check                 Warn about trace-leaving tools
+  --vpn-check                   Block if no VPN detected
+  --rate-limit 5                Max requests/second
+  --jitter                      Random delays between tools
+
+Automation:
+  --webhook https://...         POST results when done
+  --notify                      macOS desktop notification
+  --on-finding "cmd {}"         Run command per finding
+  --filter category=social      Filter results
+
+Learning:
+  --cheatsheet nmap             Quick reference for a tool
+  --explain "chain of custody"  Explain a forensics concept
 ```
 
 ---

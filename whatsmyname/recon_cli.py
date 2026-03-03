@@ -208,7 +208,7 @@ def _build_dynamic_epilog() -> str:
         "  recon categories             Browse tools by category",
         "  recon workflows              Investigation workflow templates",
         "  recon templates              Predefined scan profiles",
-        "  recon plugins                List loaded plugins",
+        "  recon plugins                Plugin marketplace (list, search, install, create, validate, submit)",
         "  recon update                 Update all tools & dependencies",
         "  recon shell                  Interactive investigation REPL",
         "",
