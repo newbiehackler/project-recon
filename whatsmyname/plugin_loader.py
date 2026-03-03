@@ -204,7 +204,34 @@ def marketplace_search(query: str | None = None) -> list[dict]:
     ]
 
 
-def marketplace_install(plugin_name: str) -> dict:
+# ---------------------------------------------------------------------------
+# Licenses
+# ---------------------------------------------------------------------------
+
+LICENSE_FILE = Path.home() / ".recon" / "licenses.json"
+
+
+def _load_licenses() -> dict:
+    """Load stored license keys."""
+    import json
+    if LICENSE_FILE.exists():
+        try:
+            return json.loads(LICENSE_FILE.read_text())
+        except Exception:
+            return {}
+    return {}
+
+
+def _save_license(plugin_name: str, key: str) -> None:
+    """Store a license key for a plugin."""
+    import json
+    licenses = _load_licenses()
+    licenses[plugin_name.lower()] = key
+    LICENSE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    LICENSE_FILE.write_text(json.dumps(licenses, indent=2))
+
+
+def marketplace_install(plugin_name: str, license_key: str | None = None) -> dict:
     """Install a plugin from the marketplace by name."""
     import urllib.request
     registry = _fetch_registry()
@@ -221,9 +248,36 @@ def marketplace_install(plugin_name: str) -> dict:
     if not match:
         return {"success": False, "error": f"Plugin '{plugin_name}' not found in marketplace"}
 
+    # --- Payment gating for paid plugins ---
+    if match.get("tier") == "paid":
+        # Check for stored license first
+        stored = _load_licenses().get(plugin_name.lower())
+        key = license_key or stored
+
+        if not key:
+            purchase_url = match.get("purchase_url", "")
+            price = match.get("price", "?")
+            return {
+                "success": False,
+                "needs_license": True,
+                "error": f"This is a paid plugin (${price})",
+                "purchase_url": purchase_url,
+                "hint": f"recon plugins install {plugin_name} --key YOUR_LICENSE_KEY",
+            }
+
+        # Validate license key prefix
+        expected_prefix = match.get("license_key_prefix", "")
+        if expected_prefix and not key.startswith(expected_prefix):
+            return {
+                "success": False,
+                "error": f"Invalid license key — expected key starting with '{expected_prefix}'",
+            }
+
+        # Store valid key for future use
+        _save_license(plugin_name, key)
+
     # Check if already installed
     ensure_plugin_dir()
-    # Derive filename from download URL
     filename = match["download_url"].split("/")[-1]
     dest = PLUGIN_DIR / filename
 
@@ -268,3 +322,254 @@ def marketplace_uninstall(plugin_name: str) -> dict:
 
     dest.unlink()
     return {"success": True, "plugin": plugin_name, "removed": str(dest)}
+
+
+# ---------------------------------------------------------------------------
+# Plugin Validation
+# ---------------------------------------------------------------------------
+
+REQUIRED_TOOL_FIELDS = {"name", "command", "description", "input_types"}
+DANGEROUS_PATTERNS = [
+    r"\beval\s*\(",
+    r"\bexec\s*\(",
+    r"\bos\.system\s*\(",
+    r"subprocess.*shell\s*=\s*True",
+    r"\b__import__\s*\(",
+    r"\bcompile\s*\(",
+]
+MAX_PLUGIN_SIZE = 500 * 1024  # 500 KB
+
+
+def validate_plugin(filepath: str) -> dict:
+    """
+    Validate a plugin file for marketplace submission.
+    Returns {"valid": bool, "errors": [...], "warnings": [...], "metadata": {...}}.
+    """
+    import ast
+    import re
+
+    errors: list[str] = []
+    warnings: list[str] = []
+    metadata: dict = {}
+    path = Path(filepath)
+
+    # --- File checks ---
+    if not path.exists():
+        return {"valid": False, "errors": [f"File not found: {filepath}"], "warnings": [], "metadata": {}}
+
+    if not path.suffix == ".py":
+        errors.append("File must be a .py file")
+
+    size = path.stat().st_size
+    if size > MAX_PLUGIN_SIZE:
+        errors.append(f"File too large: {size:,} bytes (max {MAX_PLUGIN_SIZE:,})")
+    elif size == 0:
+        errors.append("File is empty")
+
+    source = path.read_text(encoding="utf-8")
+
+    # --- Syntax check ---
+    try:
+        tree = ast.parse(source, filename=str(path))
+    except SyntaxError as e:
+        errors.append(f"Syntax error at line {e.lineno}: {e.msg}")
+        return {"valid": False, "errors": errors, "warnings": warnings, "metadata": metadata}
+
+    # --- Check for RECON_TOOLS or register() ---
+    has_recon_tools = False
+    has_register = False
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if isinstance(target, ast.Name) and target.id == "RECON_TOOLS":
+                    has_recon_tools = True
+        elif isinstance(node, ast.FunctionDef) and node.name == "register":
+            has_register = True
+
+    if not has_recon_tools and not has_register:
+        errors.append("Plugin must define RECON_TOOLS list or register() function")
+
+    # --- Dangerous code patterns ---
+    for pattern in DANGEROUS_PATTERNS:
+        matches = re.findall(pattern, source)
+        if matches:
+            errors.append(f"Dangerous code detected: {pattern.split(chr(92))[-1].split('(')[0] if chr(92) in pattern else matches[0].strip()}")
+
+    # --- Extract metadata from RECON_TOOLS if available ---
+    if has_recon_tools:
+        # Use ast.literal_eval on the RECON_TOOLS assignment node (safe, no exec)
+        try:
+            tools = None
+            for node in ast.walk(tree):
+                if isinstance(node, ast.Assign):
+                    for target in node.targets:
+                        if isinstance(target, ast.Name) and target.id == "RECON_TOOLS":
+                            tools = ast.literal_eval(node.value)
+                            break
+
+            if not isinstance(tools, list) or len(tools) == 0:
+                errors.append("RECON_TOOLS must be a non-empty list")
+            else:
+                for i, tool in enumerate(tools):
+                    if not isinstance(tool, dict):
+                        errors.append(f"RECON_TOOLS[{i}] must be a dict")
+                        continue
+                    missing = REQUIRED_TOOL_FIELDS - set(tool.keys())
+                    if missing:
+                        errors.append(f"RECON_TOOLS[{i}] missing required fields: {', '.join(sorted(missing))}")
+                    if "args_template" not in tool:
+                        warnings.append(f"RECON_TOOLS[{i}] missing args_template (recommended)")
+
+                # Build metadata from first tool
+                first = tools[0]
+                metadata = {
+                    "name": first.get("name", path.stem),
+                    "description": first.get("description", ""),
+                    "category": first.get("category", "General"),
+                    "input_types": first.get("input_types", []),
+                    "tools_provided": [t.get("name", "") for t in tools],
+                    "tool_count": len(tools),
+                }
+        except Exception as e:
+            # Can't safely extract — that's ok, just warn
+            warnings.append(f"Could not extract RECON_TOOLS at parse time: {e}")
+
+    if not metadata.get("name"):
+        metadata["name"] = path.stem.replace("_", "-")
+
+    return {
+        "valid": len(errors) == 0,
+        "errors": errors,
+        "warnings": warnings,
+        "metadata": metadata,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Plugin Scaffold
+# ---------------------------------------------------------------------------
+
+SCAFFOLD_TEMPLATE = '''"""\n{title} — RECON Marketplace Plugin\n{description}\n\nInstall: recon plugins install {name}\n"""\n\nRECON_TOOLS = [\n    {{\n        "name": "{name}",\n        "command": "{name}",\n        "description": "{description}",\n        "input_types": ["username"],\n        "args_template": ["{{target}}"],\n        "category": "General",\n        "passive": True,\n        "install_hint": "pip install {name}",\n        "learn_more": "",\n        "examples": [\n            {{"desc": "Basic scan", "cmd": "{name} johndoe"}},\n        ],\n        "works_well_with": [],\n    }}\n]\n\n\n# ── Plugin implementation ────────────────────────────────────────\n\nimport sys\nimport json\n\n\ndef run(target: str, output_json: bool = False) -> dict:\n    """Run {name} on a target."""\n    results = {{"target": target, "findings": []}}\n\n    # TODO: implement your tool logic here\n    # Example:\n    # results["findings"].append({{"url": f"https://example.com/{{target}}", "status": "found"}})\n\n    if output_json:\n        print(json.dumps(results, indent=2))\n    else:\n        print(f"\\n  {title}: {{target}}")\n        print(f"  {{\"─\" * 40}}")\n        for f in results["findings"]:\n            print(f"  → {{f}}")\n        if not results["findings"]:\n            print("  No findings yet — implement your logic above")\n\n    return results\n\n\ndef main():\n    if len(sys.argv) < 2:\n        print("Usage: {name} <target> [--json]")\n        sys.exit(1)\n    target = sys.argv[1]\n    output_json = "--json" in sys.argv\n    run(target, output_json)\n\n\nif __name__ == "__main__":\n    main()\n'''
+
+
+def scaffold_plugin(name: str, output_dir: str = ".") -> dict:
+    """Generate a new plugin scaffold file."""
+    # Normalize name
+    clean_name = name.lower().strip().replace(" ", "-")
+    filename = clean_name.replace("-", "_") + ".py"
+    title = clean_name.replace("-", " ").title()
+    dest = Path(output_dir) / filename
+
+    if dest.exists():
+        return {"success": False, "error": f"File already exists: {dest}"}
+
+    content = SCAFFOLD_TEMPLATE.format(
+        name=clean_name,
+        title=title,
+        description=f"TODO: describe what {clean_name} does",
+    )
+    dest.write_text(content)
+    return {"success": True, "path": str(dest), "name": clean_name}
+
+
+# ---------------------------------------------------------------------------
+# Plugin Submission
+# ---------------------------------------------------------------------------
+
+SUBMIT_REPO = "newbiehackler/project-recon"
+
+
+def marketplace_submit(filepath: str, tier: str = "free", price: float = 0) -> dict:
+    """
+    Submit a plugin to the marketplace via GitHub Issue.
+    Requires the `gh` CLI to be installed and authenticated.
+    """
+    import shutil
+    import subprocess
+
+    # Check gh CLI
+    if not shutil.which("gh"):
+        return {"success": False, "error": "GitHub CLI (gh) not found. Install: brew install gh"}
+
+    # Validate first
+    result = validate_plugin(filepath)
+    if not result["valid"]:
+        return {
+            "success": False,
+            "error": "Plugin validation failed",
+            "validation_errors": result["errors"],
+        }
+
+    meta = result["metadata"]
+    path = Path(filepath)
+    source = path.read_text(encoding="utf-8")
+
+    # Truncate source for issue body if very long
+    source_preview = source[:4000]
+    if len(source) > 4000:
+        source_preview += f"\n\n... (truncated, full file: {len(source):,} bytes)"
+
+    tier_label = f"${price}" if tier == "paid" and price > 0 else "FREE"
+    warnings_text = ""
+    if result["warnings"]:
+        warnings_text = "\n### Warnings\n" + "\n".join(f"- ⚠️ {w}" for w in result["warnings"])
+
+    issue_title = f"[Plugin Submission] {meta.get('name', path.stem)}"
+    issue_body = f"""## Plugin Submission
+
+| Field | Value |
+|-------|-------|
+| **Name** | {meta.get('name', path.stem)} |
+| **Author** | (submitter) |
+| **Category** | {meta.get('category', 'General')} |
+| **Input Types** | {', '.join(meta.get('input_types', []))} |
+| **Tools Provided** | {', '.join(meta.get('tools_provided', []))} |
+| **Tier** | {tier_label} |
+| **Description** | {meta.get('description', 'N/A')} |
+
+### Validation
+✅ Passed all checks{warnings_text}
+
+### Source Code
+```python
+{source_preview}
+```
+
+---
+*Submitted via `recon plugins submit`*
+"""
+
+    try:
+        proc = subprocess.run(
+            [
+                "gh", "issue", "create",
+                "--repo", SUBMIT_REPO,
+                "--title", issue_title,
+                "--body", issue_body,
+                "--label", "plugin-submission",
+            ],
+            capture_output=True, text=True, timeout=30,
+        )
+        if proc.returncode == 0:
+            issue_url = proc.stdout.strip()
+            return {"success": True, "issue_url": issue_url, "plugin": meta.get("name", path.stem)}
+        else:
+            # Label might not exist — retry without it
+            proc2 = subprocess.run(
+                [
+                    "gh", "issue", "create",
+                    "--repo", SUBMIT_REPO,
+                    "--title", issue_title,
+                    "--body", issue_body,
+                ],
+                capture_output=True, text=True, timeout=30,
+            )
+            if proc2.returncode == 0:
+                issue_url = proc2.stdout.strip()
+                return {"success": True, "issue_url": issue_url, "plugin": meta.get("name", path.stem)}
+            return {"success": False, "error": proc2.stderr.strip() or "Failed to create GitHub issue"}
+    except FileNotFoundError:
+        return {"success": False, "error": "GitHub CLI (gh) not found"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}

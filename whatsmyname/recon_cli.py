@@ -509,10 +509,11 @@ def cmd_list_tools() -> None:
 # ---------------------------------------------------------------------------
 
 def _handle_plugins(args: list[str]) -> None:
-    """Handle all plugins subcommands: list, install, search, uninstall."""
+    """Handle all plugins subcommands."""
     from whatsmyname.plugin_loader import (
         list_plugins, install_sample_plugin,
         marketplace_search, marketplace_install, marketplace_uninstall,
+        validate_plugin, scaffold_plugin, marketplace_submit,
     )
 
     if not args or args[0] == "list":
@@ -523,6 +524,7 @@ def _handle_plugins(args: list[str]) -> None:
             console.print("[yellow]No active plugins in ~/.recon/plugins/[/yellow]")
             console.print("[dim]Browse the marketplace: recon plugins search[/dim]")
             console.print("[dim]Install a plugin:       recon plugins install <name>[/dim]")
+            console.print("[dim]Create a new plugin:    recon plugins create <name>[/dim]")
         else:
             table = Table(title="Installed Plugins", border_style="dim")
             table.add_column("File", style="red")
@@ -557,21 +559,32 @@ def _handle_plugins(args: list[str]) -> None:
 
     elif action == "install":
         if len(args) < 2:
-            console.print("[red]Usage: recon plugins install <plugin-name>[/red]")
+            console.print("[red]Usage: recon plugins install <plugin-name> [--key KEY][/red]")
             console.print("[dim]Browse: recon plugins search[/dim]")
             return
         name = args[1]
+        # Parse --key flag
+        license_key = None
+        for i, a in enumerate(args):
+            if a == "--key" and i + 1 < len(args):
+                license_key = args[i + 1]
+                break
         console.print(f"[dim]Installing {name}...[/dim]")
-        result = marketplace_install(name)
+        result = marketplace_install(name, license_key=license_key)
         if result["success"]:
             console.print(f"[green]\u2713 Installed {result['plugin']} v{result['version']}[/green]")
             console.print(f"[dim]  Path: {result['path']}[/dim]")
             if result.get("tools"):
                 console.print(f"[dim]  Tools added: {', '.join(result['tools'])}[/dim]")
+        elif result.get("needs_license"):
+            console.print(f"[yellow]\u26a0 {result['error']}[/yellow]")
+            if result.get("purchase_url"):
+                console.print(f"[bold]Purchase: {result['purchase_url']}[/bold]")
+            console.print(f"[dim]{result.get('hint', '')}[/dim]")
         else:
             console.print(f"[red]\u2717 {result['error']}[/red]")
 
-    elif action == "uninstall" or action == "remove":
+    elif action in ("uninstall", "remove"):
         if len(args) < 2:
             console.print("[red]Usage: recon plugins uninstall <plugin-name>[/red]")
             return
@@ -582,9 +595,80 @@ def _handle_plugins(args: list[str]) -> None:
         else:
             console.print(f"[red]\u2717 {result['error']}[/red]")
 
+    elif action == "create":
+        if len(args) < 2:
+            console.print("[red]Usage: recon plugins create <plugin-name>[/red]")
+            return
+        name = args[1]
+        result = scaffold_plugin(name)
+        if result["success"]:
+            console.print(f"[green]\u2713 Created plugin scaffold: {result['path']}[/green]")
+            console.print(f"[dim]  Edit the file, then test locally:[/dim]")
+            console.print(f"[dim]    cp {result['path']} ~/.recon/plugins/[/dim]")
+            console.print(f"[dim]    recon list-tools[/dim]")
+            console.print(f"[dim]  When ready, validate and submit:[/dim]")
+            console.print(f"[dim]    recon plugins validate {result['path']}[/dim]")
+            console.print(f"[dim]    recon plugins submit {result['path']}[/dim]")
+        else:
+            console.print(f"[red]\u2717 {result['error']}[/red]")
+
+    elif action == "validate":
+        if len(args) < 2:
+            console.print("[red]Usage: recon plugins validate <file.py>[/red]")
+            return
+        filepath = args[1]
+        console.print(f"[dim]Validating {filepath}...[/dim]")
+        result = validate_plugin(filepath)
+        if result["valid"]:
+            console.print(f"[green]\u2713 Plugin is valid[/green]")
+            meta = result["metadata"]
+            if meta:
+                console.print(f"[dim]  Name:       {meta.get('name', 'N/A')}[/dim]")
+                console.print(f"[dim]  Category:   {meta.get('category', 'N/A')}[/dim]")
+                console.print(f"[dim]  Tools:      {', '.join(meta.get('tools_provided', []))}[/dim]")
+                console.print(f"[dim]  Inputs:     {', '.join(meta.get('input_types', []))}[/dim]")
+            for w in result["warnings"]:
+                console.print(f"[yellow]  \u26a0 {w}[/yellow]")
+            console.print(f"\n[dim]Submit with: recon plugins submit {filepath}[/dim]")
+        else:
+            console.print(f"[red]\u2717 Validation failed[/red]")
+            for e in result["errors"]:
+                console.print(f"[red]  \u2717 {e}[/red]")
+            for w in result["warnings"]:
+                console.print(f"[yellow]  \u26a0 {w}[/yellow]")
+
+    elif action == "submit":
+        if len(args) < 2:
+            console.print("[red]Usage: recon plugins submit <file.py> [--tier paid --price 10][/red]")
+            return
+        filepath = args[1]
+        # Parse --tier and --price flags
+        tier = "free"
+        price = 0.0
+        for i, a in enumerate(args):
+            if a == "--tier" and i + 1 < len(args):
+                tier = args[i + 1]
+            elif a == "--price" and i + 1 < len(args):
+                try:
+                    price = float(args[i + 1])
+                except ValueError:
+                    console.print("[red]--price must be a number[/red]")
+                    return
+        console.print(f"[dim]Validating and submitting {filepath}...[/dim]")
+        result = marketplace_submit(filepath, tier=tier, price=price)
+        if result["success"]:
+            console.print(f"[green]\u2713 Plugin submitted: {result['plugin']}[/green]")
+            console.print(f"[bold]Issue: {result['issue_url']}[/bold]")
+            console.print("[dim]The maintainer will review and add it to the marketplace.[/dim]")
+        else:
+            console.print(f"[red]\u2717 {result['error']}[/red]")
+            if result.get("validation_errors"):
+                for e in result["validation_errors"]:
+                    console.print(f"[red]  \u2717 {e}[/red]")
+
     else:
         console.print(f"[red]Unknown plugins command: {action}[/red]")
-        console.print("[dim]Available: list, search, install <name>, uninstall <name>[/dim]")
+        console.print("[dim]Available: list, search, install, uninstall, create, validate, submit[/dim]")
 
 
 # ---------------------------------------------------------------------------

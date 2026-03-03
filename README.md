@@ -282,7 +282,7 @@ This removes RECON, launchers, auto-update jobs, and shell config entries. Your 
 - [ ] **SPOTLIGHT Module** — Relationship investigation with GUI, phone backup forensics, timeline/pattern detection, red flag scoring
 - [ ] **Web Dashboard** — Browser-based investigation interface
 - [ ] **Cross-platform** — Linux support
-- [ ] **Plugin Marketplace** — Community tool sharing
+- [x] **Plugin Marketplace** — Community tool sharing with 70/30 revenue split
 - [ ] **API Mode** — REST API for programmatic access
 
 ---
@@ -297,19 +297,39 @@ Project RECON is free and open source. If it saves you time, consider supporting
   <a href="https://cash.app/$Travis0706"><img src="https://img.shields.io/badge/Cash_App-Tip-00C244?style=for-the-badge&logo=cashapp" alt="Cash App"></a>
 </p>
 
-### Plugin Marketplace (Coming Soon)
+### Plugin Marketplace
 
-Build and sell your own RECON plugins. Drop a `.py` file in `~/.recon/plugins/` and it just works.
+Build and sell your own RECON plugins. **70/30 revenue split** — you keep 70%.
+
+```bash
+# Browse available plugins
+recon plugins search
+
+# Install a plugin
+recon plugins install social-deep-dive
+
+# Create your own plugin
+recon plugins create my-scanner
+
+# Validate before submitting
+recon plugins validate my_scanner.py
+
+# Submit to the marketplace
+recon plugins submit my_scanner.py
+
+# Paid plugins require a license key
+recon plugins install premium-tool --key RECON-PREM-abc123
+```
 
 **For plugin developers:**
-- Write a plugin → submit it to the marketplace → earn money every time someone downloads it
-- Zero gatekeeping — if it works with RECON, it ships
+- Write a plugin → validate → submit → earn money on every install
+- Free or paid tiers — you choose the price
+- Full guide: [Plugin Development Guide](docs/plugin-development.md)
 
 **For investigators:**
-- Browse community plugins for specialized tools and workflows
+- Browse community plugins: `recon plugins search`
 - One-command install: `recon plugins install <name>`
-
-Want early access? [Star the repo](https://github.com/newbiehackler/project-recon) and watch for updates.
+- 3 free starter plugins available now
 
 ---
 
