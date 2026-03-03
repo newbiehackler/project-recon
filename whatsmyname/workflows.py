@@ -7,8 +7,7 @@ findings and input types.
 
 from __future__ import annotations
 
-from whatsmyname.tool_catalog import get_entry, get_suggestions_for, get_installed
-
+from whatsmyname.tool_catalog import get_entry, get_suggestions_for
 
 # ---------------------------------------------------------------------------
 # Workflow definitions — common investigation patterns
@@ -212,7 +211,7 @@ def suggest_after_scan(
     - Applicable workflows for next steps
     """
     # Find tools from applicable workflows that weren't run
-    missed = []
+    missed: list[dict] = []
     for wf in get_workflows(input_type=input_type):
         for step in wf["steps"]:
             if step["tool"] not in tools_run and step["installed"]:
@@ -220,7 +219,7 @@ def suggest_after_scan(
                     missed.append(step)
 
     # Get per-tool suggestions from what was run
-    tool_suggestions = []
+    tool_suggestions: list[dict] = []
     for tool_name in tools_run:
         suggs = suggest_next_tools(tool_name, findings_categories)
         for s in suggs:

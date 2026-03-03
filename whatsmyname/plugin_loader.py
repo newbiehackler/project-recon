@@ -23,7 +23,6 @@ Example plugin (~/.recon/plugins/my_tool.py):
 from __future__ import annotations
 
 import importlib.util
-import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -318,7 +317,7 @@ def marketplace_uninstall(plugin_name: str) -> dict:
     dest = PLUGIN_DIR / filename
 
     if not dest.exists():
-        return {"success": False, "error": f"Plugin not installed"}
+        return {"success": False, "error": "Plugin not installed"}
 
     dest.unlink()
     return {"success": True, "plugin": plugin_name, "removed": str(dest)}

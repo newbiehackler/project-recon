@@ -23,7 +23,7 @@ classifiers = [
     "Intended Audience :: Information Technology",
     "Intended Audience :: Other Audience",
     "Intended Audience :: Science/Research",
-    "License :: Other/Proprietary License",
+    "License :: OSI Approved",
     "Operating System :: MacOS",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",

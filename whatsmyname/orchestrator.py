@@ -21,7 +21,6 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-
 # ---------------------------------------------------------------------------
 # Input type detection
 # ---------------------------------------------------------------------------
@@ -37,7 +36,7 @@ def detect_input_type(value: str) -> InputType:
     value = value.strip()
     if "@" in value and "." in value.split("@")[-1]:
         return InputType.EMAIL
-    if re.match(r"^\+?\d[\d\s\-()]{6,}$", value):
+    if re.match(r"^[\+\(]?\d[\d\s\-()]{6,}$", value):
         return InputType.PHONE
     return InputType.USERNAME
 
@@ -48,8 +47,14 @@ def parse_phone(value: str) -> tuple[str, str]:
     """
     digits = re.sub(r"[^\d+]", "", value)
     if digits.startswith("+"):
-        # Try common country code lengths
-        for length in (4, 3, 2):  # e.g. +1, +44, +380
+        # +1 (NANP) and +7 (Russia/Kazakhstan) are the only single-digit country codes.
+        # All others are 2 or 3 digits. Try the most likely length first.
+        first_digit = digits[1:2]
+        if first_digit in ("1", "7"):
+            lengths = (2, 3, 4)
+        else:
+            lengths = (3, 4, 2)
+        for length in lengths:
             cc = digits[:length]
             num = digits[length:]
             if num:
@@ -794,11 +799,11 @@ async def run_recon(
     all_results = await asyncio.gather(*tasks, *email_tasks, return_exceptions=True)
 
     for result in all_results:
-        if isinstance(result, Exception):
+        if isinstance(result, BaseException):
             report.tools_run.append(ToolReport(
                 tool_name="unknown", status="failed", error=str(result),
             ))
-        else:
+        elif isinstance(result, ToolReport):
             report.tools_run.append(result)
             report.all_findings.extend(result.findings)
 
@@ -863,7 +868,7 @@ def export_csv(report: UnifiedReport, path: str) -> None:
 
 def export_html(report: UnifiedReport, path: str) -> None:
     deduped = report.deduplicated_findings()
-    by_cat = {}
+    by_cat: dict[str, list[Finding]] = {}
     for f in deduped:
         by_cat.setdefault(f.category, []).append(f)
 

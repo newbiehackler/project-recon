@@ -4,10 +4,10 @@ jobs:
   verify-json-validation:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Validate JSON
-        uses: docker://orrosenblatt/validate-json-action:latest
-        env:
-          INPUT_SCHEMA: /wmn-data-schema.json
-          INPUT_JSONS: /wmn-data.json
+        uses: OrRosenblatt/validate-json-action@0.1.0
+        with:
+          schema: wmn-data-schema.json
+          jsons: wmn-data.json

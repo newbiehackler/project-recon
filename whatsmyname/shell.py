@@ -19,9 +19,7 @@ Commands:
 from __future__ import annotations
 
 import asyncio
-import os
 import readline
-import sys
 from pathlib import Path
 
 from rich.console import Console
@@ -108,7 +106,7 @@ def _print_help():
 
 def run_shell():
     """Start the interactive RECON shell."""
-    from whatsmyname.sessions import create_or_resume, save_session, list_sessions, Session
+    from whatsmyname.sessions import Session, create_or_resume, list_sessions, save_session
 
     _setup_readline()
 
@@ -120,17 +118,9 @@ def run_shell():
     ))
 
     current_session: Session | None = None
-    last_findings: list[dict] = []
 
     while True:
         try:
-            # Build prompt
-            prompt_parts = ["[bold red]recon[/bold red]"]
-            if current_session:
-                prompt_parts.append(f"[yellow]({current_session.name})[/yellow]")
-            prompt_parts.append("[bold]>[/bold] ")
-            prompt = " ".join(prompt_parts)
-
             # Use plain input since rich prompt doesn't work with readline
             session_indicator = f" ({current_session.name})" if current_session else ""
             user_input = input(f"recon{session_indicator}> ").strip()
@@ -252,7 +242,7 @@ def run_shell():
                 console.print("[red]Usage: scan <target> [--tools tool1,tool2][/red]")
             else:
                 # Parse scan args and run
-                from whatsmyname.recon_cli import parse_args, _async_main
+                from whatsmyname.recon_cli import _async_main, parse_args
                 try:
                     scan_args = parse_args(args_str.split())
                     if scan_args.target:
@@ -267,7 +257,7 @@ def run_shell():
                 console.print("[red]Usage: pivot <url_or_email_or_username>[/red]")
             else:
                 console.print(f"[red]Pivoting on: {args_str}[/red]")
-                from whatsmyname.recon_cli import parse_args, _async_main
+                from whatsmyname.recon_cli import _async_main, parse_args
                 try:
                     scan_args = parse_args([args_str])
                     if scan_args.target:
