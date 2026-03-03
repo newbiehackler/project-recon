@@ -5,9 +5,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Validate JSON
-        uses: OrRosenblatt/validate-json-action@9635f1e0bda5d3e5b41598de4c9442bc0e2d9353
+      - uses: actions/setup-python@v5
         with:
-          schema: wmn-data-schema.json
-          json: wmn-data.json
+          python-version: "3.12"
+      - name: Install jsonschema
+        run: pip install jsonschema
+      - name: Validate wmn-data.json against schema
+        run: |
+          python -c "
+          import json, jsonschema, sys
+          schema = json.load(open('wmn-data-schema.json'))
+          data = json.load(open('wmn-data.json'))
+          try:
+              jsonschema.validate(data, schema)
+              print('✓ wmn-data.json is valid against schema')
+          except jsonschema.ValidationError as e:
+              print(f'✗ Validation failed: {e.message}', file=sys.stderr)
+              sys.exit(1)
+          "
