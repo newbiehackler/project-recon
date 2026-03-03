@@ -166,13 +166,24 @@ def install_sample_plugin() -> Path:
 REGISTRY_URL = "https://raw.githubusercontent.com/newbiehackler/project-recon/main/marketplace/registry.json"
 
 
+def _ssl_context():
+    """Build an SSL context — prefer certifi certs, fall back to defaults."""
+    import ssl
+    try:
+        import certifi
+        return ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        return ssl.create_default_context()
+
+
 def _fetch_registry() -> dict:
     """Fetch the plugin marketplace registry."""
     import json
     import urllib.request
     try:
+        ctx = _ssl_context()
         req = urllib.request.Request(REGISTRY_URL, headers={"User-Agent": "RECON/3.0"})
-        with urllib.request.urlopen(req, timeout=15) as resp:
+        with urllib.request.urlopen(req, timeout=15, context=ctx) as resp:
             return json.loads(resp.read().decode())
     except Exception as e:
         return {"error": str(e), "plugins": []}
@@ -221,8 +232,9 @@ def marketplace_install(plugin_name: str) -> dict:
 
     # Download
     try:
+        ctx = _ssl_context()
         req = urllib.request.Request(match["download_url"], headers={"User-Agent": "RECON/3.0"})
-        with urllib.request.urlopen(req, timeout=30) as resp:
+        with urllib.request.urlopen(req, timeout=30, context=ctx) as resp:
             content = resp.read()
         dest.write_bytes(content)
         return {
