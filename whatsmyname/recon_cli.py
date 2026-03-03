@@ -18,10 +18,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
-import json
 import os
-import platform
-import shutil
 import stat
 import subprocess
 import sys
@@ -30,12 +27,11 @@ import webbrowser
 from pathlib import Path
 from threading import Lock
 
+from rich.columns import Columns
 from rich.console import Console
 from rich.live import Live
-from rich.table import Table
 from rich.panel import Panel
-from rich.text import Text
-from rich.columns import Columns
+from rich.table import Table
 
 from whatsmyname.orchestrator import (
     InputType,
@@ -392,7 +388,7 @@ def cmd_learn(tool_name: str) -> None:
             console.print()
 
     if entry.works_well_with:
-        console.print(f"  [bold]What to run next:[/bold]")
+        console.print("  [bold]What to run next:[/bold]")
         from whatsmyname.tool_catalog import get_entry as _get
         for w in entry.works_well_with:
             companion = _get(w["tool"])
@@ -511,9 +507,14 @@ def cmd_list_tools() -> None:
 def _handle_plugins(args: list[str]) -> None:
     """Handle all plugins subcommands."""
     from whatsmyname.plugin_loader import (
-        list_plugins, install_sample_plugin,
-        marketplace_search, marketplace_install, marketplace_uninstall,
-        validate_plugin, scaffold_plugin, marketplace_submit,
+        install_sample_plugin,
+        list_plugins,
+        marketplace_install,
+        marketplace_search,
+        marketplace_submit,
+        marketplace_uninstall,
+        scaffold_plugin,
+        validate_plugin,
     )
 
     if not args or args[0] == "list":
@@ -555,7 +556,7 @@ def _handle_plugins(args: list[str]) -> None:
             tier = "[green]FREE[/green]" if p.get("tier") == "free" else f"[yellow]${p.get('price', '?')}[/yellow]"
             table.add_row(p["name"], p["description"][:60], p.get("category", ""), tier, p.get("version", ""))
         console.print(table)
-        console.print(f"\n[dim]Install with: recon plugins install <name>[/dim]")
+        console.print("\n[dim]Install with: recon plugins install <name>[/dim]")
 
     elif action == "install":
         if len(args) < 2:
@@ -603,10 +604,10 @@ def _handle_plugins(args: list[str]) -> None:
         result = scaffold_plugin(name)
         if result["success"]:
             console.print(f"[green]\u2713 Created plugin scaffold: {result['path']}[/green]")
-            console.print(f"[dim]  Edit the file, then test locally:[/dim]")
+            console.print("[dim]  Edit the file, then test locally:[/dim]")
             console.print(f"[dim]    cp {result['path']} ~/.recon/plugins/[/dim]")
-            console.print(f"[dim]    recon list-tools[/dim]")
-            console.print(f"[dim]  When ready, validate and submit:[/dim]")
+            console.print("[dim]    recon list-tools[/dim]")
+            console.print("[dim]  When ready, validate and submit:[/dim]")
             console.print(f"[dim]    recon plugins validate {result['path']}[/dim]")
             console.print(f"[dim]    recon plugins submit {result['path']}[/dim]")
         else:
@@ -620,7 +621,7 @@ def _handle_plugins(args: list[str]) -> None:
         console.print(f"[dim]Validating {filepath}...[/dim]")
         result = validate_plugin(filepath)
         if result["valid"]:
-            console.print(f"[green]\u2713 Plugin is valid[/green]")
+            console.print("[green]\u2713 Plugin is valid[/green]")
             meta = result["metadata"]
             if meta:
                 console.print(f"[dim]  Name:       {meta.get('name', 'N/A')}[/dim]")
@@ -631,7 +632,7 @@ def _handle_plugins(args: list[str]) -> None:
                 console.print(f"[yellow]  \u26a0 {w}[/yellow]")
             console.print(f"\n[dim]Submit with: recon plugins submit {filepath}[/dim]")
         else:
-            console.print(f"[red]\u2717 Validation failed[/red]")
+            console.print("[red]\u2717 Validation failed[/red]")
             for e in result["errors"]:
                 console.print(f"[red]  \u2717 {e}[/red]")
             for w in result["warnings"]:
@@ -711,7 +712,7 @@ async def _async_main(args: argparse.Namespace) -> None:
             override = {n.strip().lower() for n in args.tools.split(",")}
             applicable = [t for t in applicable if t.name.lower() in override]
 
-        console.print(f"[bold]Dry Run — would execute:[/bold]")
+        console.print("[bold]Dry Run — would execute:[/bold]")
         console.print(f"[bold]Target:[/bold]  {args.target}")
         console.print(f"[bold]Type:[/bold]    {detected.value}")
         console.print()
@@ -737,7 +738,7 @@ async def _async_main(args: argparse.Namespace) -> None:
 
     email_expand = not args.no_email_expand
     if detected == InputType.USERNAME and email_expand:
-        console.print(f"[bold]Email expansion:[/bold] ON")
+        console.print("[bold]Email expansion:[/bold] ON")
 
     console.print()
 
@@ -872,8 +873,9 @@ async def _async_main(args: argparse.Namespace) -> None:
 
     # --- Session tracking ---
     if args.session:
-        from whatsmyname.sessions import create_or_resume, save_session, SessionRun
         from datetime import datetime, timezone
+
+        from whatsmyname.sessions import SessionRun, create_or_resume, save_session
         session = create_or_resume(args.session)
         if args.case_id:
             session.case_id = args.case_id
@@ -899,7 +901,7 @@ async def _async_main(args: argparse.Namespace) -> None:
         ])
         if args.notes:
             session.add_note(args.notes)
-        path = save_session(session)
+        save_session(session)
         console.print(f"\n[green]Session '{args.session}' saved ({session.total_runs} runs, {session.total_findings} findings)[/green]")
 
     # --- Desktop notification ---

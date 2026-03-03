@@ -23,7 +23,6 @@ Example plugin (~/.recon/plugins/my_tool.py):
 from __future__ import annotations
 
 import importlib.util
-import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -176,7 +175,7 @@ def _ssl_context():
         return ssl.create_default_context()
 
 
-def _fetch_registry() -> dict:
+def _fetch_registry() -> dict[str, Any]:
     """Fetch the plugin marketplace registry."""
     import json
     import urllib.request
@@ -184,15 +183,16 @@ def _fetch_registry() -> dict:
         ctx = _ssl_context()
         req = urllib.request.Request(REGISTRY_URL, headers={"User-Agent": "RECON/3.0"})
         with urllib.request.urlopen(req, timeout=15, context=ctx) as resp:
-            return json.loads(resp.read().decode())
+            result: dict[str, Any] = json.loads(resp.read().decode())
+            return result
     except Exception as e:
         return {"error": str(e), "plugins": []}
 
 
-def marketplace_search(query: str | None = None) -> list[dict]:
+def marketplace_search(query: str | None = None) -> list[dict[str, Any]]:
     """Search the marketplace registry. Returns matching plugins."""
     registry = _fetch_registry()
-    plugins = registry.get("plugins", [])
+    plugins: list[dict[str, Any]] = registry.get("plugins", [])
     if not query:
         return plugins
     q = query.lower()
@@ -211,12 +211,13 @@ def marketplace_search(query: str | None = None) -> list[dict]:
 LICENSE_FILE = Path.home() / ".recon" / "licenses.json"
 
 
-def _load_licenses() -> dict:
+def _load_licenses() -> dict[str, Any]:
     """Load stored license keys."""
     import json
     if LICENSE_FILE.exists():
         try:
-            return json.loads(LICENSE_FILE.read_text())
+            result: dict[str, Any] = json.loads(LICENSE_FILE.read_text())
+            return result
         except Exception:
             return {}
     return {}
@@ -318,7 +319,7 @@ def marketplace_uninstall(plugin_name: str) -> dict:
     dest = PLUGIN_DIR / filename
 
     if not dest.exists():
-        return {"success": False, "error": f"Plugin not installed"}
+        return {"success": False, "error": "Plugin not installed"}
 
     dest.unlink()
     return {"success": True, "plugin": plugin_name, "removed": str(dest)}

@@ -163,7 +163,6 @@ async def _check_site(
                 )
             elif e_string == "" and code == e_code:
                 # Status-code-only detection (for extended sites without string patterns)
-                m_code = site.get("m_code", 404)
                 if m_string and m_string in text:
                     return CheckResult(
                         site_name=name,

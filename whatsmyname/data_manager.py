@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
 import ssl
 from pathlib import Path
 from typing import Any
@@ -55,7 +54,7 @@ def load_wmn_data() -> list[dict[str, Any]]:
         return []
     with open(_WMN_DATA, encoding="utf-8") as f:
         data = json.load(f)
-    sites = data.get("sites", [])
+    sites: list[dict[str, Any]] = data.get("sites", [])
     # Tag the source
     for s in sites:
         s.setdefault("_source", "wmn")
@@ -68,7 +67,7 @@ def load_extended_data() -> list[dict[str, Any]]:
         return []
     with open(_EXTENDED_DATA, encoding="utf-8") as f:
         data = json.load(f)
-    sites = data.get("sites", []) if isinstance(data, dict) else data
+    sites: list[dict[str, Any]] = data.get("sites", []) if isinstance(data, dict) else data
     for s in sites:
         s.setdefault("_source", "extended")
     return sites
@@ -80,7 +79,7 @@ def load_cached_remote(name: str) -> list[dict[str, Any]]:
     if not cache_file.exists():
         return []
     with open(cache_file, encoding="utf-8") as f:
-        data = json.load(f)
+        data: list[dict[str, Any]] = json.load(f)
     return data
 
 

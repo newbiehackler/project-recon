@@ -9,13 +9,11 @@ import time
 from collections import Counter
 from pathlib import Path
 
-from rich.console import Console
 from rich.table import Table
 
 from whatsmyname import __version__
 from whatsmyname.checker import CheckerConfig, CheckResult, Status, check_username
 from whatsmyname.data_manager import (
-    get_all_categories,
     load_all_local,
     load_all_with_update,
 )

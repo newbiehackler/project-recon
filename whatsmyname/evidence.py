@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -199,19 +198,19 @@ class EvidenceBag:
 
         # Write human-readable summary
         summary_lines = [
-            f"RECON Evidence Bag",
-            f"==================",
+            "RECON Evidence Bag",
+            "==================",
             f"Case ID:    {self.case_id or 'N/A'}",
             f"Examiner:   {self.examiner or 'N/A'}",
             f"Created:    {self.chain[0]['timestamp'] if self.chain else 'N/A'}",
             f"Finalized:  {datetime.now(timezone.utc).isoformat()}",
-            f"",
+            "",
             f"Artifacts:  {len(self.manifest)}",
             f"Chain entries: {len(self.chain)}",
-            f"",
+            "",
             f"Manifest SHA-256: {manifest_hash}",
-            f"",
-            f"Files:",
+            "",
+            "Files:",
         ]
         for entry in self.manifest:
             summary_lines.append(
