@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Validate JSON
-        uses: OrRosenblatt/validate-json-action@0.1.0
+        uses: OrRosenblatt/validate-json-action@9635f1e0bda5d3e5b41598de4c9442bc0e2d9353
         with:
           schema: wmn-data-schema.json
-          jsons: wmn-data.json
+          json: wmn-data.json
