@@ -6,6 +6,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [3.1.1] — 2026-03-04
+
+### Added
+- **Recommended Future Integrations** — 50+ curated open-source tools across 15+ categories in README
+  - Tier 1: SpiderFoot, Recon-ng, Reconftw, BBOT, Amass, Subfinder, httpx, Nuclei, Katana, Volatility 3, Autopsy/TSK, Shodan CLI
+  - Tier 2: Maltego CE, OpenCTI, MISP, Osintgram, Instaloader, Twint, SocialPwned, CrossLinked, DaProfiler, Tookie-OSINT, GHunt, Mosint, Quidam, Moriarty-Project, Ghidra, Photon, web-check, Gobuster, Feroxbuster, waybackurls, gau, Metagoofil, FOCA, Imago Forensics, Censys CLI, IVRE, Findomain, sn0int, ReconSpider, iKy
+  - Tier 3: OnionSearch, TorBot, Orbit, Creepy, ShadowFinder, Dissect, Hayabusa, mac_apt, IPED, Zeek, Traceeshark, Forensix, firefox_decrypt, Cameradar, Linux Explorer, pagodo, GooFuzz, commit-stream, github-dorks, Raccoon, Sn1per
+- Expanded roadmap with per-tier integration milestones
+
+---
+
 ## [3.1.0] — 2026-03-04
 
 ### Added
