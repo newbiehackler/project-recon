@@ -6,6 +6,36 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [3.1.1] — 2026-03-04
+
+### Added
+- **Recommended Future Integrations** — 50+ curated open-source tools across 15+ categories in README
+  - Tier 1: SpiderFoot, Recon-ng, Reconftw, BBOT, Amass, Subfinder, httpx, Nuclei, Katana, Volatility 3, Autopsy/TSK, Shodan CLI
+  - Tier 2: Maltego CE, OpenCTI, MISP, Osintgram, Instaloader, Twint, SocialPwned, CrossLinked, DaProfiler, Tookie-OSINT, GHunt, Mosint, Quidam, Moriarty-Project, Ghidra, Photon, web-check, Gobuster, Feroxbuster, waybackurls, gau, Metagoofil, FOCA, Imago Forensics, Censys CLI, IVRE, Findomain, sn0int, ReconSpider, iKy
+  - Tier 3: OnionSearch, TorBot, Orbit, Creepy, ShadowFinder, Dissect, Hayabusa, mac_apt, IPED, Zeek, Traceeshark, Forensix, firefox_decrypt, Cameradar, Linux Explorer, pagodo, GooFuzz, commit-stream, github-dorks, Raccoon, Sn1per
+- Expanded roadmap with per-tier integration milestones
+
+---
+
+## [3.1.0] — 2026-03-04
+
+### Added
+- **CompreFace integration** — self-hosted face recognition (detect, recognize, verify faces) via Docker + REST API wrapper
+- **untappdScraper integration** — social behavior intelligence from Untappd.com (drinking patterns, geolocation, friend networks)
+- **4n6notebooks integration** — Jupyter forensic notebooks for iOS (SQLCipher decrypt, Signal parsing, ProtonMail recovery)
+- **iOS Keychain Decrypter integration** — decrypt saved passwords, WiFi creds, app tokens from jailbroken iOS devices
+- **OSINT Tools CLI integration** — interactive Rust TUI browser for 1,000+ OSINT tools from Cipher387's collection
+- All 5 new tools have extensive `--help` output, launcher wrappers, catalog entries, and auto-update support
+- Tool count increased from 40+ to 45+ across 17+ categories
+- New categories active: Face Recognition & Image Intel, iOS Forensics
+
+### Changed
+- `install.sh` now installs and configures all 5 new bundled tools with dependency management
+- `update.sh` now rebuilds Rust and C binaries during auto-updates
+- README updated with new architecture diagram and tool count
+
+---
+
 ## [3.0.0] — 2026-03-01
 
 ### Added

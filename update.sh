@@ -142,11 +142,29 @@ if $DO_BUNDLED; then
     # Install/update requirements for bundled tools
     for repo_dir in "$INSTALL_DIR/tools"/*/; do
         repo_name=$(basename "$repo_dir")
-        if [ -f "$repo_dir/requirements.txt" ]; then
-            pip install -r "$repo_dir/requirements.txt" >> "$LOG_FILE" 2>&1 && \
-                ok "$repo_name deps" || warn "$repo_name deps"
-        fi
+        # Check top-level and src/ subdirectory for requirements
+        for req in "$repo_dir/requirements.txt" "$repo_dir/src/requirements.txt"; do
+            if [ -f "$req" ]; then
+                pip install --upgrade -r "$req" >> "$LOG_FILE" 2>&1 && \
+                    ok "$repo_name deps" || warn "$repo_name deps"
+                break
+            fi
+        done
     done
+
+    # Rebuild Rust tools (osint-tools-cli)
+    if command -v cargo &>/dev/null && [ -f "$INSTALL_DIR/tools/osint-tools-cli/src/Cargo.toml" ]; then
+        info "Rebuilding osint-tools-cli..."
+        cargo build --release --manifest-path "$INSTALL_DIR/tools/osint-tools-cli/src/Cargo.toml" >> "$LOG_FILE" 2>&1 && \
+            ok "osint-tools-cli rebuilt" || warn "osint-tools-cli rebuild failed"
+    fi
+
+    # Rebuild keychain agent (if Xcode available)
+    if [ -f "$INSTALL_DIR/tools/keychain-decrypter/src/Makefile" ] && xcode-select -p &>/dev/null; then
+        info "Rebuilding keychain agent..."
+        make -C "$INSTALL_DIR/tools/keychain-decrypter/src" >> "$LOG_FILE" 2>&1 && \
+            ok "keychain agent rebuilt" || warn "keychain agent rebuild failed"
+    fi
 fi
 
 # ── 3. Brew tools ────────────────────────────────────────────────

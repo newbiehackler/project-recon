@@ -5,7 +5,7 @@
   <a href="#installation"><img src="https://img.shields.io/badge/platform-macOS-black?style=flat-square&logo=apple" alt="Platform"></a>
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.10%2B-cc0000?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
   <img src="https://img.shields.io/badge/version-3.0.0-ff0000?style=flat-square" alt="Version">
-  <img src="https://img.shields.io/badge/tools-40%2B-8b0000?style=flat-square" alt="Tools">
+  <img src="https://img.shields.io/badge/tools-45%2B-8b0000?style=flat-square" alt="Tools">
   <a href="LICENSE.md"><img src="https://img.shields.io/badge/license-CC--BY--SA--4.0-333333?style=flat-square" alt="License"></a>
 </p>
 
@@ -71,7 +71,8 @@ Email Investigation     Wireless Security       Steganography
 Phone Lookup            Password Recovery       Document Analysis
 Social Engineering      Disk Forensics          Reverse Engineering
 Vulnerability Scanning  OSINT Frameworks        Metadata Extraction
-Web Application         Relationship Investigation (SPOTLIGHT)
+Web Application         Face Recognition        iOS Forensics
+Relationship Investigation (SPOTLIGHT)
 ```
 
 ---
@@ -268,9 +269,14 @@ RECON_WorkBench/
 │   │   ├── plugin_loader.py# Plugin system
 │   │   └── shell.py        # Interactive REPL
 │   └── wmn-data.json       # 4,000+ site database
-├── tools/                  # Bundled git-based tools
-│   ├── blackbird/
-│   └── cupidcr4wl/
+├── tools/                  # Bundled tools
+│   ├── blackbird/          # Username search (600+ sites)
+│   ├── cupidcr4wl/         # Dating/adult platform OSINT
+│   ├── compreface/         # Face recognition (Docker)
+│   ├── untappd-scraper/    # Social behavior intelligence
+│   ├── 4n6notebooks/       # iOS forensic Jupyter notebooks
+│   ├── keychain-decrypter/ # iOS keychain decryption
+│   └── osint-tools-cli/    # 1,000+ OSINT tool browser (Rust TUI)
 └── .recon/                 # User data (portable)
     ├── plugins/
     ├── sessions/
@@ -354,6 +360,122 @@ This removes RECON, launchers, auto-update jobs, and shell config entries. Your 
 
 ---
 
+## Recommended Future Integrations
+
+Based on extensive research across GitHub, security conferences, and DFIR communities, these open-source tools would be high-value additions to RECON. Organized by tier and category.
+
+### Tier 1 — Must-Have (Fills Critical Gaps)
+
+**OSINT Automation & Frameworks**
+- [SpiderFoot](https://github.com/smicallef/spiderfoot) — 200+ modules, auto-correlates IPs/domains/emails/usernames, web UI + CLI, Python, MIT license
+- [Recon-ng](https://github.com/lanmaster53/recon-ng) — Modular CLI reconnaissance framework with workspaces, API integrations, and built-in reporting
+- [Reconftw](https://github.com/six2dez/reconftw) — Automated recon pipeline that orchestrates Amass + Subfinder + Nuclei + httpx + dozens more into a single workflow
+- [BBOT](https://github.com/blacklanternsecurity/bbot) — Next-gen OSINT automation for hackers; recursive scanning, event-driven architecture, 100+ modules
+
+**Subdomain & Attack Surface Discovery**
+- [Amass](https://github.com/owasp-amass/amass) (OWASP) — Gold standard for subdomain discovery, network mapping, and external asset enumeration
+- [Subfinder](https://github.com/projectdiscovery/subfinder) — Fast passive subdomain enumeration using 45+ data sources (Go, by ProjectDiscovery)
+- [httpx](https://github.com/projectdiscovery/httpx) — Fast multi-purpose HTTP toolkit for probing web servers, tech detection, status codes
+- [Nuclei](https://github.com/projectdiscovery/nuclei) — Fast vulnerability scanner based on YAML templates; 7,000+ community templates
+- [Katana](https://github.com/projectdiscovery/katana) — Next-generation crawling and spidering framework by ProjectDiscovery
+
+**Memory & Disk Forensics**
+- [Volatility 3](https://github.com/volatilityfoundation/volatility3) — Extract processes, network connections, and malware from RAM dumps — essential for DFIR
+- [Autopsy](https://github.com/sleuthkit/autopsy) / [The Sleuth Kit](https://github.com/sleuthkit/sleuthkit) — Industry-standard disk image analysis, file carving, timeline generation
+- [Shodan CLI](https://cli.shodan.io/) — Search internet-connected devices, exposed services, and vulnerabilities from the terminal
+
+### Tier 2 — High Value
+
+**Link Analysis & Visualization**
+- [Maltego CE](https://www.maltego.com/maltego-community/) — Visual relationship mapping between entities — free community edition with 58+ data sources
+- [OpenCTI](https://github.com/OpenCTI-Platform/opencti) — Open-source threat intelligence platform; structured knowledge graph with STIX2 support
+- [MISP](https://github.com/MISP/MISP) — Malware Information Sharing Platform; threat intelligence sharing with correlation engine
+
+**Social Media & People OSINT**
+- [Osintgram](https://github.com/Datalux/Osintgram) — Interactive shell for deep Instagram recon (followers, geolocations, stories, comments, media)
+- [Instaloader](https://github.com/instaloader/instaloader) — Download Instagram posts, stories, highlights, metadata, and profile data (11.7k stars)
+- [Twint](https://github.com/twintproject/twint) — Advanced Twitter scraping without API; followers, tweets, geolocation, email hunting
+- [SocialPwned](https://github.com/MrTuxx/SocialPwned) — Cross-platform email harvesting from Instagram/LinkedIn/Twitter + breach checking via PwnDB/Dehashed/GHunt
+- [CrossLinked](https://github.com/m8sec/CrossLinked) — LinkedIn enumeration via search engine scraping to extract employee names for email generation
+- [DaProfiler](https://github.com/daprofiler/DaProfiler) — Recover addresses, social accounts, emails, phone numbers, and jobs using web scraping + Google dorking
+- [Tookie-OSINT](https://github.com/Alfredredbird/tookie-osint) — Advanced OSINT gathering tool that finds social media accounts across platforms (1.7k stars)
+
+**Google & Email Intelligence**
+- [GHunt](https://github.com/mxrch/GHunt) — Investigate Google accounts (emails, reviews, photos, maps contributions, calendar events)
+- [Mosint](https://github.com/alpkeskin/mosint) — Automated email OSINT tool for gathering information about email addresses
+- [Quidam](https://github.com/megadose/Quidam) — Retrieve information via forgotten-password functions on websites; has Maltego transforms
+
+**Phone Intelligence**
+- [Moriarty-Project](https://github.com/AzizKpln/Moriarty-Project) — Web-based phone number investigation tool with 6+ features and multi-source lookup
+
+**Reverse Engineering & Binary Analysis**
+- [Ghidra](https://github.com/NationalSecurityAgency/ghidra) — NSA's open-source SRE suite with decompiler, far more powerful than objdump/lldb alone
+
+**Web Recon & Crawling**
+- [Photon](https://github.com/s0md3v/Photon) — Incredibly fast OSINT crawler that extracts URLs, emails, social accounts, files, and JS
+- [web-check](https://github.com/Lissy93/web-check) — All-in-one OSINT tool for analyzing any website (DNS, SSL, headers, tech stack, security)
+- [Gobuster](https://github.com/OJ/gobuster) — Directory/file, DNS and VHost busting tool written in Go
+- [Feroxbuster](https://github.com/epi052/feroxbuster) — Fast, recursive content discovery tool written in Rust
+- [waybackurls](https://github.com/tomnomnom/waybackurls) — Fetch all URLs the Wayback Machine knows about for a domain
+- [gau](https://github.com/lc/gau) — Fetch known URLs from AlienVault, Wayback Machine, and Common Crawl
+
+**Document & Metadata Extraction**
+- [Metagoofil](https://github.com/laramies/metagoofil) — Extract metadata from public documents (PDFs, DOCs) found on target domains
+- [FOCA](https://github.com/ElevenPaths/FOCA) — Automated document harvester; extracts internal org structures from Google/Bing/DuckDuckGo
+- [Imago Forensics](https://github.com/redaelli/imago-forensics) — Extract digital evidence from images recursively for forensic investigations
+
+**Internet-Wide Scanning**
+- [Censys CLI](https://github.com/censys/censys-python) — Query internet-wide scan data for hosts, certificates, and services
+- [IVRE](https://github.com/ivre/ivre) — Network recon framework; build your own Shodan/ZoomEye/Censys alternative
+- [Findomain](https://github.com/Edu4rdSHL/findomain) — Fast domain recon with screenshotting, port scanning, and subdomain monitoring
+
+**OSINT Frameworks & Package Managers**
+- [sn0int](https://github.com/kpcyrd/sn0int) — Semi-automatic OSINT framework with built-in package manager for community modules
+- [ReconSpider](https://github.com/bhavsec/reconspider) — Advanced OSINT framework for scanning IPs, emails, websites, organizations with dashboard visualization
+- [iKy](https://github.com/kennbroorg/iKy) — OSINT tool that collects information from email and presents it as a visual dashboard
+
+### Tier 3 — Specialized & Advanced
+
+**Dark Web OSINT**
+- [OnionSearch](https://github.com/megadose/OnionSearch) — Scrape URLs from multiple .onion search engines for dark web investigations
+- [TorBot](https://github.com/DedSecInside/TorBot) — Dark web OSINT tool; crawls .onion sites, extracts emails, and maps dark web topology
+
+**Cryptocurrency & Blockchain Investigation**
+- [Orbit](https://github.com/s0md3v/Orbit) — Draws relationships between crypto wallets with recursive transaction history crawling
+- [Maltego BTC/ETH](https://www.maltego.com/) — Maltego supports Bitcoin and Ethereum address entities for transaction mapping
+
+**Geolocation OSINT**
+- [Creepy](https://github.com/ilektrojohn/creepy) — Geolocation OSINT from social networks; presents on map, export to CSV/KML for Google Maps
+- [ShadowFinder](https://github.com/bellingcat/ShadowFinder) — Find possible geolocations from shadow analysis in images
+
+**Digital Forensics (Advanced)**
+- [Dissect](https://github.com/fox-it/dissect) — DFIR framework to parse forensic artefacts from disk/file formats at scale — by Fox-IT/NCC Group
+- [Hayabusa](https://github.com/Yamato-Security/hayabusa) — Sigma-based threat hunting and fast forensics timeline generator for Windows event logs (Rust)
+- [mac_apt](https://github.com/ydkhatri/mac_apt) — macOS DFIR tool to extract artifacts from full disk images
+- [IPED](https://github.com/sepinf-inc/IPED) — Brazilian Federal Police forensic tool — processes disk images at 400GB/hr, 40+ carving formats
+- [Zeek](https://github.com/zeek/zeek) — Deep network traffic analysis framework; generates detailed activity logs for forensic correlation
+- [Traceeshark](https://github.com/aquasecurity/traceeshark) — Wireshark plugin adding kernel-level event analysis and behavioral detection
+- [Forensix](https://github.com/ChmaraX/forensix) — Google Chrome forensic tool to process, analyze and visualize browsing artifacts
+- [firefox_decrypt](https://github.com/unode/firefox_decrypt) — Extract passwords from Firefox/Thunderbird/Seabird profiles
+- [Cameradar](https://github.com/Ullaakut/cameradar) — Hack into RTSP video surveillance cameras for security auditing
+- [Linux Explorer](https://github.com/intezer/linux-explorer) — Easy-to-use live forensics toolbox for Linux endpoints
+
+**Google Dorking & Fuzzing**
+- [pagodo](https://github.com/opsdisk/pagodo) — Automate Google Hacking Database queries for target reconnaissance
+- [GooFuzz](https://github.com/m3n0sd0n4ld/GooFuzz) — OSINT fuzzing tool that enumerates directories, files, subdomains via advanced Google dorking
+
+**GitHub & Code OSINT**
+- [commit-stream](https://github.com/x1sec/commit-stream) — Find GitHub repos by extracting commit logs in real-time from the GitHub Event API
+- [github-dorks](https://github.com/techgaun/github-dorks) — CLI tool to scan GitHub repos/organizations for potential sensitive information leaks
+
+**Vulnerability Scanning**
+- [Raccoon](https://github.com/evyatarmeged/Raccoon) — High performance offensive recon and vulnerability scanning tool
+- [Sn1per](https://github.com/1N3/Sn1per) — Automated pentest framework with attack surface management and vulnerability scanning
+
+> **50+ tools** across 15+ categories. To request an integration, open an issue on GitHub or submit a plugin via `recon plugins create`.
+
+---
+
 ## Roadmap
 
 - [ ] **SPOTLIGHT Module** — Relationship investigation with GUI, phone backup forensics, timeline/pattern detection, red flag scoring
@@ -361,6 +483,11 @@ This removes RECON, launchers, auto-update jobs, and shell config entries. Your 
 - [ ] **Cross-platform** — Linux support
 - [x] **Plugin Marketplace** — Community tool sharing with 70/30 revenue split
 - [ ] **API Mode** — REST API for programmatic access
+- [ ] **Tier 1 Tool Integrations** — SpiderFoot, Recon-ng, Reconftw, BBOT, Amass, Subfinder, httpx, Nuclei, Katana, Volatility, Autopsy/TSK, Shodan CLI
+- [ ] **Tier 2 Social & People OSINT** — Osintgram, Instaloader, Twint, SocialPwned, CrossLinked, GHunt, Tookie-OSINT
+- [ ] **Tier 2 Web & Infrastructure** — Maltego CE, OpenCTI, MISP, Photon, web-check, Censys CLI, IVRE
+- [ ] **Tier 3 Dark Web & Crypto** — OnionSearch, TorBot, Orbit
+- [ ] **Tier 3 Advanced Forensics** — Dissect, Hayabusa, Zeek, IPED, mac_apt, Traceeshark
 
 ---
 

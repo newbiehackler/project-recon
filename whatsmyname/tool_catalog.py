@@ -1056,6 +1056,132 @@ TOOL_CATALOG: list[CatalogEntry] = [
         learn_more="https://github.com/OSINTI4L/cupidcr4wl",
     ),
 
+    # ===================================================================
+    # Face Recognition & Image Intel
+    # ===================================================================
+    CatalogEntry(
+        name="compreface",
+        command="compreface",
+        category=CAT_FACE_RECOG,
+        description="CompreFace — self-hosted face recognition service. Detect, recognize, and verify faces via Docker + REST API.",
+        install_hint="Bundled with RECON (requires Docker Desktop)",
+        input_types=["file", "image"],
+        passive=True,
+        examples=[
+            {"cmd": "compreface start", "desc": "Start the CompreFace Docker containers"},
+            {"cmd": "compreface detect photo.jpg", "desc": "Detect all faces in a photo"},
+            {"cmd": "compreface recognize suspect.jpg", "desc": "Recognize faces against known subjects"},
+            {"cmd": "compreface verify face1.jpg face2.jpg", "desc": "Compare two faces for similarity"},
+            {"cmd": "compreface add-subject --name 'John Doe' --image ref.jpg", "desc": "Add a known face to the database"},
+            {"cmd": "compreface detect ./evidence_photos/ -o json", "desc": "Batch detect faces, export as JSON"},
+            {"cmd": "compreface status", "desc": "Check if the service is running and healthy"},
+        ],
+        works_well_with=[
+            {"tool": "exiftool", "reason": "Extract GPS/timestamp metadata from photos before face recognition"},
+            {"tool": "sherlock", "reason": "Once you identify a person, search for their online presence"},
+            {"tool": "maigret", "reason": "Deep username search for identified persons"},
+            {"tool": "blackbird", "reason": "Search dating/social platforms for identified persons"},
+            {"tool": "toutatis", "reason": "Extract contact info from Instagram profiles of matched faces"},
+        ],
+        learn_more="https://github.com/exadel-inc/CompreFace",
+    ),
+
+    # ===================================================================
+    # OSINT / General Reconnaissance (additional)
+    # ===================================================================
+    CatalogEntry(
+        name="untappd-scraper",
+        command="untappd-scraper",
+        category=CAT_OSINT_GENERAL,
+        description="untappdScraper — scrape Untappd.com for drinking patterns, geolocation, friend networks, and venue history.",
+        install_hint="Bundled with RECON (pip deps: bs4, geocoder, gmplot, googlemaps)",
+        input_types=["username"],
+        passive=True,
+        examples=[
+            {"cmd": "untappd-scraper -u targetuser", "desc": "Full profile scrape with patterns and venues"},
+            {"cmd": "untappd-scraper -u targetuser --recent", "desc": "Only dump recent check-in locations"},
+        ],
+        works_well_with=[
+            {"tool": "sherlock", "reason": "Find the Untappd username on other platforms"},
+            {"tool": "maigret", "reason": "Deep search across 3,000+ sites for the same username"},
+            {"tool": "exiftool", "reason": "Check photos posted alongside check-ins for GPS metadata"},
+            {"tool": "blackbird", "reason": "Cross-reference on dating/social platforms"},
+        ],
+        learn_more="https://github.com/WebBreacher/untappdScraper",
+    ),
+
+    CatalogEntry(
+        name="osint-tools-cli",
+        command="osint-tools-cli",
+        category=CAT_OSINT_GENERAL,
+        description="OSINT Tools CLI — interactive TUI browser for 1,000+ OSINT tools and resources from Cipher387's collection.",
+        install_hint="Bundled with RECON (requires Rust toolchain for building)",
+        input_types=["system"],
+        passive=True,
+        examples=[
+            {"cmd": "osint-tools-cli launch", "desc": "Start the interactive TUI browser"},
+            {"cmd": "osint-tools-cli build", "desc": "Build from Rust source code"},
+        ],
+        works_well_with=[
+            {"tool": "wmn", "reason": "Discover new tools to complement your WMN searches"},
+            {"tool": "sherlock", "reason": "Find alternative tools for username enumeration"},
+        ],
+        learn_more="https://github.com/Coordinate-Cat/osint-tools-cli",
+    ),
+
+    # ===================================================================
+    # Digital Forensics & Recovery (additional)
+    # ===================================================================
+    CatalogEntry(
+        name="4n6notebooks",
+        command="4n6notebooks",
+        category=CAT_FORENSICS,
+        description="4n6notebooks — Jupyter forensic notebooks for iOS: SQLCipher decrypt, Signal parsing, ProtonMail recovery, chat rendering.",
+        install_hint="Bundled with RECON (pip deps: jupyterlab, pycryptodome, pandas, pgpy)",
+        input_types=["file", "device"],
+        passive=True,
+        examples=[
+            {"cmd": "4n6notebooks launch", "desc": "Open the full forensics lab in JupyterLab"},
+            {"cmd": "4n6notebooks launch signal", "desc": "Open the iOS Signal parsing notebook"},
+            {"cmd": "4n6notebooks launch sqlcipher", "desc": "Open the SQLCipher decryption notebook"},
+            {"cmd": "4n6notebooks launch protonmail", "desc": "Open the ProtonMail recovery notebook"},
+            {"cmd": "4n6notebooks list", "desc": "List all available forensic notebooks"},
+            {"cmd": "4n6notebooks export signal --format html", "desc": "Export a completed notebook to HTML"},
+        ],
+        works_well_with=[
+            {"tool": "keychain-decrypt", "reason": "Get encryption keys from iOS keychain to decrypt app databases"},
+            {"tool": "exiftool", "reason": "Extract metadata from recovered media files"},
+            {"tool": "strings", "reason": "Find interesting text in binary database files"},
+            {"tool": "testdisk", "reason": "Recover deleted files from device images"},
+            {"tool": "compreface", "reason": "Run face recognition on extracted photos"},
+        ],
+        learn_more="https://github.com/studiawan/4n6notebooks",
+    ),
+
+    CatalogEntry(
+        name="keychain-decrypt",
+        command="keychain-decrypt",
+        category=CAT_FORENSICS,
+        description="iOS Keychain Decrypter — decrypt saved passwords, WiFi creds, app tokens, and certificates from jailbroken iOS devices.",
+        install_hint="Bundled with RECON (requires jailbroken device + Xcode for agent)",
+        input_types=["device"],
+        passive=False,
+        examples=[
+            {"cmd": "keychain-decrypt decrypt", "desc": "Run the full keychain decryption workflow"},
+            {"cmd": "keychain-decrypt build-agent", "desc": "Compile the on-device key unwrapper agent"},
+            {"cmd": "keychain-decrypt upload-agent", "desc": "Upload the agent to the jailbroken device"},
+            {"cmd": "keychain-decrypt download-db", "desc": "Download keychain database from device"},
+            {"cmd": "keychain-decrypt install-deps", "desc": "Install Python dependencies"},
+        ],
+        works_well_with=[
+            {"tool": "4n6notebooks", "reason": "Use extracted keys to decrypt app databases in notebooks"},
+            {"tool": "holehe", "reason": "Check extracted emails for service registrations"},
+            {"tool": "h8mail", "reason": "Check extracted emails against breach databases"},
+            {"tool": "sherlock", "reason": "Search extracted usernames across platforms"},
+        ],
+        learn_more="https://github.com/nicolo/ios_keychain_decrypter",
+    ),
+
     CatalogEntry(
         name="toutatis",
         command="toutatis",
