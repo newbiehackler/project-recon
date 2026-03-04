@@ -232,6 +232,81 @@ CEOF
         ok "cupidcr4wl → ~/.local/bin/cupidcr4wl"
     fi
 
+    # CompreFace wrapper
+    if [ -d "$INSTALL_DIR/tools/compreface" ]; then
+        cat > "$BIN_DIR/compreface" << CFEOF
+#!/usr/bin/env bash
+source "$VENV_DIR/bin/activate"
+python3 "$INSTALL_DIR/tools/compreface/compreface-cli.py" "\$@"
+CFEOF
+        chmod +x "$BIN_DIR/compreface"
+        ok "compreface → ~/.local/bin/compreface"
+    fi
+
+    # untappdScraper wrapper
+    if [ -d "$INSTALL_DIR/tools/untappd-scraper" ]; then
+        # Install untappd deps
+        pip install bs4 geocoder gmplot googlemaps requests >> "$LOG_FILE" 2>&1 || true
+        cat > "$BIN_DIR/untappd-scraper" << UTEOF
+#!/usr/bin/env bash
+source "$VENV_DIR/bin/activate"
+python3 "$INSTALL_DIR/tools/untappd-scraper/untappd-cli.py" "\$@"
+UTEOF
+        chmod +x "$BIN_DIR/untappd-scraper"
+        ok "untappd-scraper → ~/.local/bin/untappd-scraper"
+    fi
+
+    # 4n6notebooks wrapper
+    if [ -d "$INSTALL_DIR/tools/4n6notebooks" ]; then
+        # Install 4n6notebooks deps
+        if [ -f "$INSTALL_DIR/tools/4n6notebooks/src/requirements.txt" ]; then
+            pip install -r "$INSTALL_DIR/tools/4n6notebooks/src/requirements.txt" >> "$LOG_FILE" 2>&1 || true
+        fi
+        cat > "$BIN_DIR/4n6notebooks" << NBEOF
+#!/usr/bin/env bash
+source "$VENV_DIR/bin/activate"
+python3 "$INSTALL_DIR/tools/4n6notebooks/4n6notebooks-cli.py" "\$@"
+NBEOF
+        chmod +x "$BIN_DIR/4n6notebooks"
+        ok "4n6notebooks → ~/.local/bin/4n6notebooks"
+    fi
+
+    # iOS Keychain Decrypter wrapper
+    if [ -d "$INSTALL_DIR/tools/keychain-decrypter" ]; then
+        # Install keychain deps
+        if [ -f "$INSTALL_DIR/tools/keychain-decrypter/src/requirements.txt" ]; then
+            pip install -r "$INSTALL_DIR/tools/keychain-decrypter/src/requirements.txt" >> "$LOG_FILE" 2>&1 || true
+        fi
+        # Build agent if Xcode is available
+        if [ -f "$INSTALL_DIR/tools/keychain-decrypter/src/Makefile" ] && xcode-select -p &>/dev/null; then
+            info "Building keychain agent..."
+            make -C "$INSTALL_DIR/tools/keychain-decrypter/src" >> "$LOG_FILE" 2>&1 || warn "keychain agent build failed (Xcode signing may be needed)"
+        fi
+        cat > "$BIN_DIR/keychain-decrypt" << KCEOF
+#!/usr/bin/env bash
+source "$VENV_DIR/bin/activate"
+python3 "$INSTALL_DIR/tools/keychain-decrypter/keychain-cli.py" "\$@"
+KCEOF
+        chmod +x "$BIN_DIR/keychain-decrypt"
+        ok "keychain-decrypt → ~/.local/bin/keychain-decrypt"
+    fi
+
+    # OSINT Tools CLI wrapper (Rust TUI)
+    if [ -d "$INSTALL_DIR/tools/osint-tools-cli" ]; then
+        # Build if cargo is available
+        if command -v cargo &>/dev/null && [ -f "$INSTALL_DIR/tools/osint-tools-cli/src/Cargo.toml" ]; then
+            info "Building osint-tools-cli (Rust)..."
+            cargo build --release --manifest-path "$INSTALL_DIR/tools/osint-tools-cli/src/Cargo.toml" >> "$LOG_FILE" 2>&1 && ok "osint-tools-cli compiled" || warn "osint-tools-cli build failed (install Rust: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh)"
+        fi
+        cat > "$BIN_DIR/osint-tools-cli" << OTEOF
+#!/usr/bin/env bash
+source "$VENV_DIR/bin/activate"
+python3 "$INSTALL_DIR/tools/osint-tools-cli/osint-tools-cli-wrapper.py" "\$@"
+OTEOF
+        chmod +x "$BIN_DIR/osint-tools-cli"
+        ok "osint-tools-cli → ~/.local/bin/osint-tools-cli"
+    fi
+
     # Main recon launcher (activates venv automatically)
     cat > "$BIN_DIR/recon" << 'REOF'
 #!/usr/bin/env bash

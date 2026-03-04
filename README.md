@@ -5,7 +5,7 @@
   <a href="#installation"><img src="https://img.shields.io/badge/platform-macOS-black?style=flat-square&logo=apple" alt="Platform"></a>
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.10%2B-cc0000?style=flat-square&logo=python&logoColor=white" alt="Python"></a>
   <img src="https://img.shields.io/badge/version-3.0.0-ff0000?style=flat-square" alt="Version">
-  <img src="https://img.shields.io/badge/tools-40%2B-8b0000?style=flat-square" alt="Tools">
+  <img src="https://img.shields.io/badge/tools-45%2B-8b0000?style=flat-square" alt="Tools">
   <a href="LICENSE.md"><img src="https://img.shields.io/badge/license-CC--BY--SA--4.0-333333?style=flat-square" alt="License"></a>
 </p>
 
@@ -71,7 +71,8 @@ Email Investigation     Wireless Security       Steganography
 Phone Lookup            Password Recovery       Document Analysis
 Social Engineering      Disk Forensics          Reverse Engineering
 Vulnerability Scanning  OSINT Frameworks        Metadata Extraction
-Web Application         Relationship Investigation (SPOTLIGHT)
+Web Application         Face Recognition        iOS Forensics
+Relationship Investigation (SPOTLIGHT)
 ```
 
 ---
@@ -268,9 +269,14 @@ RECON_WorkBench/
 │   │   ├── plugin_loader.py# Plugin system
 │   │   └── shell.py        # Interactive REPL
 │   └── wmn-data.json       # 4,000+ site database
-├── tools/                  # Bundled git-based tools
-│   ├── blackbird/
-│   └── cupidcr4wl/
+├── tools/                  # Bundled tools
+│   ├── blackbird/          # Username search (600+ sites)
+│   ├── cupidcr4wl/         # Dating/adult platform OSINT
+│   ├── compreface/         # Face recognition (Docker)
+│   ├── untappd-scraper/    # Social behavior intelligence
+│   ├── 4n6notebooks/       # iOS forensic Jupyter notebooks
+│   ├── keychain-decrypter/ # iOS keychain decryption
+│   └── osint-tools-cli/    # 1,000+ OSINT tool browser (Rust TUI)
 └── .recon/                 # User data (portable)
     ├── plugins/
     ├── sessions/
@@ -354,6 +360,50 @@ This removes RECON, launchers, auto-update jobs, and shell config entries. Your 
 
 ---
 
+## Recommended Future Integrations
+
+Based on extensive research, these open-source tools would be high-value additions to RECON:
+
+### Tier 1 — Must-Have (Fills Major Gaps)
+
+| Tool | Category | Why |
+|------|----------|-----|
+| [SpiderFoot](https://github.com/smicallef/spiderfoot) | OSINT Automation | 200+ modules, auto-correlates IPs/domains/emails/usernames, web UI + CLI, Python, MIT license |
+| [Recon-ng](https://github.com/lanmaster53/recon-ng) | Recon Framework | Modular CLI framework with workspaces, API integrations, and built-in reporting |
+| [Amass](https://github.com/owasp-amass/amass) (OWASP) | DNS/Subdomain Enum | Gold standard for subdomain discovery, network mapping, and attack surface mapping |
+| [Volatility 3](https://github.com/volatilityfoundation/volatility3) | Memory Forensics | Extract processes, network connections, and malware from RAM dumps — essential for DFIR |
+| [Autopsy](https://github.com/sleuthkit/autopsy) / [The Sleuth Kit](https://github.com/sleuthkit/sleuthkit) | Disk Forensics | Industry-standard disk image analysis, file carving, timeline generation |
+| [Shodan CLI](https://cli.shodan.io/) | IoT/Network Recon | Search internet-connected devices, exposed services, and vulnerabilities |
+
+### Tier 2 — High Value
+
+| Tool | Category | Why |
+|------|----------|-----|
+| [Maltego CE](https://www.maltego.com/maltego-community/) | Link Analysis | Visual relationship mapping between entities — free community edition |
+| [Ghidra](https://github.com/NationalSecurityAgency/ghidra) | Reverse Engineering | NSA's open-source SRE suite, far more powerful than objdump/lldb alone |
+| [Metagoofil](https://github.com/laramies/metagoofil) | Document Metadata | Extract metadata from public documents (PDFs, DOCs) found on target domains |
+| [sn0int](https://github.com/kpcyrd/sn0int) | OSINT Framework | Semi-automatic OSINT with a package manager for community modules |
+| [Censys CLI](https://github.com/censys/censys-python) | Internet Scanning | Query internet-wide scan data for hosts, certificates, and services |
+| [GHunt](https://github.com/mxrch/GHunt) | Google OSINT | Investigate Google accounts (emails, reviews, photos, maps contributions) |
+| [Photon](https://github.com/s0md3v/Photon) | Web Crawler | Fast web crawler that extracts URLs, emails, social accounts, and files |
+| [Hayabusa](https://github.com/Yamato-Security/hayabusa) | Windows Forensics | Sigma-based threat hunting and timeline generation from Windows event logs |
+
+### Tier 3 — Nice to Have
+
+| Tool | Category | Why |
+|------|----------|-----|
+| [Osintgram](https://github.com/Datalux/Osintgram) | Instagram OSINT | Deep Instagram reconnaissance (followers, geolocations, stories) |
+| [Dissect](https://github.com/fox-it/dissect) | DFIR Framework | Parse forensic artefacts from disk/file formats at scale — by Fox-IT |
+| [OpenCTI](https://github.com/OpenCTI-Platform/opencti) | Threat Intel Platform | Correlate and manage all OSINT findings in a structured knowledge graph |
+| [Zeek](https://github.com/zeek/zeek) | Network Forensics | Deep network traffic analysis, generates detailed logs of all activity |
+| [IPED](https://github.com/sepinf-inc/IPED) | Digital Evidence | Brazilian Federal Police forensic tool — processes disk images at 400GB/hr |
+| [mac_apt](https://github.com/ydkhatri/mac_apt) | macOS Forensics | Extract and analyze artifacts from macOS disk images |
+| [pagodo](https://github.com/opsdisk/pagodo) | Google Dorking | Automate Google Hacking Database queries for target reconnaissance |
+
+> To request a tool integration, open an issue on GitHub or submit a plugin via `recon plugins create`.
+
+---
+
 ## Roadmap
 
 - [ ] **SPOTLIGHT Module** — Relationship investigation with GUI, phone backup forensics, timeline/pattern detection, red flag scoring
@@ -361,6 +411,7 @@ This removes RECON, launchers, auto-update jobs, and shell config entries. Your 
 - [ ] **Cross-platform** — Linux support
 - [x] **Plugin Marketplace** — Community tool sharing with 70/30 revenue split
 - [ ] **API Mode** — REST API for programmatic access
+- [ ] **Tier 1 Tool Integrations** — SpiderFoot, Recon-ng, Amass, Volatility, Autopsy/TSK, Shodan CLI
 
 ---
 

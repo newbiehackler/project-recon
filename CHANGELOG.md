@@ -6,6 +6,25 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [3.1.0] — 2026-03-04
+
+### Added
+- **CompreFace integration** — self-hosted face recognition (detect, recognize, verify faces) via Docker + REST API wrapper
+- **untappdScraper integration** — social behavior intelligence from Untappd.com (drinking patterns, geolocation, friend networks)
+- **4n6notebooks integration** — Jupyter forensic notebooks for iOS (SQLCipher decrypt, Signal parsing, ProtonMail recovery)
+- **iOS Keychain Decrypter integration** — decrypt saved passwords, WiFi creds, app tokens from jailbroken iOS devices
+- **OSINT Tools CLI integration** — interactive Rust TUI browser for 1,000+ OSINT tools from Cipher387's collection
+- All 5 new tools have extensive `--help` output, launcher wrappers, catalog entries, and auto-update support
+- Tool count increased from 40+ to 45+ across 17+ categories
+- New categories active: Face Recognition & Image Intel, iOS Forensics
+
+### Changed
+- `install.sh` now installs and configures all 5 new bundled tools with dependency management
+- `update.sh` now rebuilds Rust and C binaries during auto-updates
+- README updated with new architecture diagram and tool count
+
+---
+
 ## [3.0.0] — 2026-03-01
 
 ### Added
