@@ -1,0 +1,2561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project RECON — Complete User Guide & Owner Manual</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --red-deep:   #3a0000;
+    --red-dark:   #8b0000;
+    --red-mid:    #cc0000;
+    --red-bright: #ff0000;
+    --red-light:  #ff4444;
+    --bg:         #0a0a0a;
+    --bg2:        #111111;
+    --bg3:        #1a1a1a;
+    --bg4:        #222222;
+    --border:     #2a2a2a;
+    --text:       #e8e8e8;
+    --text-dim:   #aaaaaa;
+    --text-muted: #666666;
+    --code-bg:    #141414;
+    --accent:     #cc0000;
+    --green:      #22c55e;
+    --yellow:     #f59e0b;
+    --blue:       #3b82f6;
+    --purple:     #a855f7;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 10pt;
+    line-height: 1.65;
+    color: var(--text);
+    background: white;
+    color: #1a1a1a;
+  }
+
+  /* ── PAGE SETUP ─────────────────────────────────────────────────── */
+  @page {
+    size: letter;
+    margin: 0.75in 0.75in 0.85in 0.75in;
+    @bottom-center {
+      content: "Project RECON User Guide  •  Page " counter(page) " of " counter(pages);
+      font-family: 'Inter', sans-serif;
+      font-size: 7.5pt;
+      color: #888;
+    }
+    @top-right {
+      content: "CONFIDENTIAL — FOR AUTHORIZED USE ONLY";
+      font-family: 'Inter', sans-serif;
+      font-size: 7pt;
+      color: #cc0000;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+  }
+
+  @page :first { @bottom-center { content: ""; } @top-right { content: ""; } }
+
+  /* ── COVER PAGE ─────────────────────────────────────────────────── */
+  .cover {
+    page-break-after: always;
+    min-height: 9.5in;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #0a0a0a;
+    color: #e8e8e8;
+    padding: 1in;
+    text-align: center;
+  }
+
+  .cover-logo {
+    font-size: 72pt;
+    margin-bottom: 0.2in;
+    filter: drop-shadow(0 0 30px #cc000066);
+  }
+
+  .cover-title {
+    font-size: 36pt;
+    font-weight: 800;
+    color: #cc0000;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.08in;
+    text-transform: uppercase;
+  }
+
+  .cover-subtitle {
+    font-size: 14pt;
+    font-weight: 300;
+    color: #aaaaaa;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.5in;
+  }
+
+  .cover-divider {
+    width: 3in;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #cc0000, transparent);
+    margin: 0.3in auto;
+  }
+
+  .cover-tagline {
+    font-size: 13pt;
+    color: #e8e8e8;
+    font-style: italic;
+    margin-bottom: 0.3in;
+  }
+
+  .cover-meta {
+    font-size: 9pt;
+    color: #555;
+    margin-top: auto;
+    padding-top: 1in;
+  }
+
+  .cover-meta strong { color: #888; }
+
+  .cover-badge {
+    display: inline-block;
+    background: #1a0000;
+    border: 1px solid #cc0000;
+    color: #cc0000;
+    font-size: 8pt;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    padding: 4px 12px;
+    border-radius: 3px;
+    margin: 4px 4px;
+    text-transform: uppercase;
+  }
+
+  /* ── TABLE OF CONTENTS ──────────────────────────────────────────── */
+  .toc-page {
+    page-break-after: always;
+  }
+
+  .toc-title {
+    font-size: 22pt;
+    font-weight: 800;
+    color: #cc0000;
+    border-bottom: 3px solid #cc0000;
+    padding-bottom: 10px;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .toc-section { margin-bottom: 6px; }
+
+  .toc-h1 {
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: #1a1a1a;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted #ccc;
+    padding: 3px 0;
+  }
+
+  .toc-h2 {
+    font-size: 9.5pt;
+    font-weight: 400;
+    color: #444;
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0 2px 20px;
+    border-bottom: 1px dotted #e8e8e8;
+  }
+
+  .toc-num { color: #888; font-weight: 400; }
+
+  /* ── TYPOGRAPHY ─────────────────────────────────────────────────── */
+  h1 {
+    font-size: 22pt;
+    font-weight: 800;
+    color: #cc0000;
+    margin: 0 0 16px 0;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #cc0000;
+    page-break-after: avoid;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  h2 {
+    font-size: 15pt;
+    font-weight: 700;
+    color: #8b0000;
+    margin: 28px 0 12px 0;
+    padding-left: 12px;
+    border-left: 4px solid #cc0000;
+    page-break-after: avoid;
+  }
+
+  h3 {
+    font-size: 12pt;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 20px 0 8px 0;
+    page-break-after: avoid;
+  }
+
+  h4 {
+    font-size: 10.5pt;
+    font-weight: 600;
+    color: #333;
+    margin: 14px 0 6px 0;
+    page-break-after: avoid;
+  }
+
+  p { margin: 0 0 10px 0; }
+
+  a { color: #cc0000; text-decoration: none; }
+
+  strong { font-weight: 700; color: #1a1a1a; }
+
+  em { font-style: italic; }
+
+  ul, ol { margin: 8px 0 12px 20px; }
+  li { margin-bottom: 4px; line-height: 1.6; }
+
+  /* ── CODE BLOCKS ────────────────────────────────────────────────── */
+  code {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 8.5pt;
+    background: #f5f5f5;
+    color: #cc0000;
+    padding: 1px 5px;
+    border-radius: 3px;
+    border: 1px solid #e5e5e5;
+  }
+
+  pre {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 8pt;
+    background: #111;
+    color: #e8e8e8;
+    padding: 14px 16px;
+    border-radius: 6px;
+    border-left: 4px solid #cc0000;
+    margin: 10px 0 16px 0;
+    overflow-x: auto;
+    page-break-inside: avoid;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    line-height: 1.55;
+  }
+
+  pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    border: none;
+    font-size: inherit;
+  }
+
+  /* comment-style lines in code blocks */
+  .cm { color: #555; font-style: italic; }
+  .kw { color: #cc0000; font-weight: 600; }
+  .st { color: #22c55e; }
+  .fl { color: #f59e0b; }
+  .cm2 { color: #3b82f6; }
+
+  /* ── CALLOUT BOXES ──────────────────────────────────────────────── */
+  .callout {
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 12px 0 16px 0;
+    page-break-inside: avoid;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .callout-icon { font-size: 14pt; flex-shrink: 0; margin-top: 1px; }
+  .callout-body { flex: 1; }
+  .callout-title { font-weight: 700; font-size: 10pt; margin-bottom: 4px; }
+
+  .callout-warning {
+    background: #fff8e6;
+    border: 1px solid #f59e0b;
+    border-left: 4px solid #f59e0b;
+  }
+  .callout-warning .callout-title { color: #b45309; }
+
+  .callout-danger {
+    background: #fff0f0;
+    border: 1px solid #cc0000;
+    border-left: 4px solid #cc0000;
+  }
+  .callout-danger .callout-title { color: #8b0000; }
+
+  .callout-info {
+    background: #eff6ff;
+    border: 1px solid #3b82f6;
+    border-left: 4px solid #3b82f6;
+  }
+  .callout-info .callout-title { color: #1d4ed8; }
+
+  .callout-tip {
+    background: #f0fdf4;
+    border: 1px solid #22c55e;
+    border-left: 4px solid #22c55e;
+  }
+  .callout-tip .callout-title { color: #15803d; }
+
+  /* ── TABLES ─────────────────────────────────────────────────────── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 16px 0;
+    font-size: 8.5pt;
+    page-break-inside: avoid;
+  }
+
+  thead tr {
+    background: #8b0000;
+    color: white;
+  }
+
+  thead th {
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  tbody tr:nth-child(even) { background: #f9f9f9; }
+  tbody tr:nth-child(odd) { background: white; }
+
+  tbody td {
+    padding: 6px 10px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+  }
+
+  tbody td code {
+    font-size: 8pt;
+    background: #f5f5f5;
+    padding: 1px 4px;
+  }
+
+  /* ── SECTION BREAK ──────────────────────────────────────────────── */
+  .section { page-break-before: always; padding-top: 0; }
+  .no-break { page-break-before: auto; }
+
+  .chapter-header {
+    background: #0a0a0a;
+    color: white;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    border-radius: 6px;
+  }
+
+  .chapter-header .chapter-num {
+    font-size: 8pt;
+    font-weight: 700;
+    color: #cc0000;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .chapter-header h1 {
+    color: white;
+    border: none;
+    margin: 0;
+    padding: 0;
+    font-size: 20pt;
+    text-transform: uppercase;
+  }
+
+  .chapter-header .chapter-desc {
+    color: #999;
+    font-size: 9pt;
+    margin-top: 6px;
+  }
+
+  /* ── FLAG REFERENCE ─────────────────────────────────────────────── */
+  .flag-table code {
+    color: #8b0000;
+    font-weight: 600;
+  }
+
+  .flag-group-header {
+    background: #f5f5f5;
+    font-weight: 700;
+    font-size: 9pt;
+    color: #444;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 6px 10px;
+    border-bottom: 2px solid #ddd;
+  }
+
+  /* ── TOOL CARD ──────────────────────────────────────────────────── */
+  .tool-card {
+    border: 1px solid #e5e5e5;
+    border-left: 4px solid #cc0000;
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin: 10px 0;
+    page-break-inside: avoid;
+    background: #fafafa;
+  }
+
+  .tool-card-name {
+    font-weight: 700;
+    font-size: 10.5pt;
+    color: #8b0000;
+    margin-bottom: 3px;
+  }
+
+  .tool-card-desc {
+    font-size: 9pt;
+    color: #444;
+    margin-bottom: 6px;
+  }
+
+  .tool-card-meta {
+    font-size: 8pt;
+    color: #888;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 7pt;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 12px;
+    margin-right: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-passive { background: #dcfce7; color: #15803d; }
+  .badge-active  { background: #fef2f2; color: #b91c1c; }
+  .badge-cat     { background: #eff6ff; color: #1d4ed8; }
+  .badge-pip     { background: #fdf4ff; color: #7e22ce; }
+  .badge-brew    { background: #fff7ed; color: #c2410c; }
+
+  /* ── WORKFLOW STEP ──────────────────────────────────────────────── */
+  .workflow-step {
+    display: flex;
+    gap: 12px;
+    margin: 6px 0;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    background: #cc0000;
+    color: white;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 8pt;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .step-content { flex: 1; }
+  .step-tool { font-weight: 700; color: #8b0000; }
+
+  /* ── TWO-COLUMN ─────────────────────────────────────────────────── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 10px 0;
+  }
+
+  .col-card {
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    padding: 10px 12px;
+    background: #fafafa;
+  }
+
+  .col-card-title {
+    font-weight: 700;
+    font-size: 9.5pt;
+    color: #8b0000;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 4px;
+  }
+
+  .col-card ul { margin-left: 14px; margin-top: 0; }
+  .col-card li { font-size: 9pt; margin-bottom: 2px; }
+
+  /* ── MISC ───────────────────────────────────────────────────────── */
+  hr {
+    border: none;
+    border-top: 1px solid #e5e5e5;
+    margin: 20px 0;
+  }
+
+  .red { color: #cc0000; }
+  .bold { font-weight: 700; }
+  .small { font-size: 8.5pt; }
+  .center { text-align: center; }
+  .muted { color: #888; }
+
+  .phase-badge {
+    display: inline-block;
+    background: #0a0a0a;
+    color: #cc0000;
+    font-size: 7.5pt;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 2px;
+    margin-right: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .evidence-box {
+    background: #0a0a0a;
+    color: #e8e8e8;
+    border: 1px solid #cc0000;
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin: 12px 0;
+    font-size: 9pt;
+    page-break-inside: avoid;
+  }
+
+  .evidence-box h4 {
+    color: #cc0000;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9pt;
+    margin-bottom: 8px;
+  }
+
+  .evidence-box ul { margin-left: 16px; }
+  .evidence-box li { color: #aaa; margin-bottom: 3px; }
+  .evidence-box strong { color: #e8e8e8; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     COVER PAGE
+═══════════════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-logo">🔴</div>
+  <div class="cover-title">Project RECON</div>
+  <div class="cover-subtitle">Rapid Evidence Collection &amp; OSINT Network</div>
+  <div class="cover-divider"></div>
+  <div class="cover-tagline">"One search. Every tool. No mercy."</div>
+
+  <div style="margin: 20px 0;">
+    <span class="cover-badge">Version 3.3.0</span>
+    <span class="cover-badge">68+ Tools</span>
+    <span class="cover-badge">23 Categories</span>
+    <span class="cover-badge">macOS</span>
+  </div>
+
+  <div class="cover-divider"></div>
+
+  <div style="color: #aaa; font-size: 11pt; margin-top: 24px; max-width: 5in; line-height: 1.8;">
+    Complete User Guide &amp; Owner Manual<br>
+    <span style="font-size: 9pt; color: #555;">
+      Installation · Core Commands · SPOTLIGHT Module · All 68 Tools ·<br>
+      Chain of Custody · Evidence Bags · OpSec · Workflows · Templates
+    </span>
+  </div>
+
+  <div class="cover-meta">
+    <strong>Classification:</strong> Sensitive — Authorized Investigator Use Only<br>
+    <strong>Platform:</strong> macOS 12+ (Monterey or newer) &nbsp;|&nbsp;
+    <strong>Python:</strong> 3.10+<br>
+    <strong>Generated:</strong> March 2026 &nbsp;|&nbsp;
+    <strong>License:</strong> CC BY-SA 4.0
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     TABLE OF CONTENTS
+═══════════════════════════════════════════════════════════════════ -->
+<div class="toc-page">
+  <div class="toc-title">Table of Contents</div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>1 &nbsp; Introduction &amp; Overview</span><span class="toc-num">3</span></div>
+    <div class="toc-h2"><span>What is Project RECON?</span><span class="toc-num">3</span></div>
+    <div class="toc-h2"><span>Core Capabilities at a Glance</span><span class="toc-num">3</span></div>
+    <div class="toc-h2"><span>Legal &amp; Ethical Notice</span><span class="toc-num">3</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>2 &nbsp; System Requirements &amp; Installation</span><span class="toc-num">4</span></div>
+    <div class="toc-h2"><span>Requirements</span><span class="toc-num">4</span></div>
+    <div class="toc-h2"><span>One-Command Install (Portable Drive)</span><span class="toc-num">4</span></div>
+    <div class="toc-h2"><span>Install from GitHub</span><span class="toc-num">4</span></div>
+    <div class="toc-h2"><span>Manual / Developer Install</span><span class="toc-num">4</span></div>
+    <div class="toc-h2"><span>Verifying Installation</span><span class="toc-num">4</span></div>
+    <div class="toc-h2"><span>Uninstalling</span><span class="toc-num">4</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>3 &nbsp; Architecture &amp; Directory Structure</span><span class="toc-num">5</span></div>
+    <div class="toc-h2"><span>File Layout</span><span class="toc-num">5</span></div>
+    <div class="toc-h2"><span>User Data Directory (~/.recon/)</span><span class="toc-num">5</span></div>
+    <div class="toc-h2"><span>Module Overview</span><span class="toc-num">5</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>4 &nbsp; Quick Start</span><span class="toc-num">6</span></div>
+    <div class="toc-h2"><span>First Run</span><span class="toc-num">6</span></div>
+    <div class="toc-h2"><span>Basic Scans</span><span class="toc-num">6</span></div>
+    <div class="toc-h2"><span>Understanding the Output</span><span class="toc-num">6</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>5 &nbsp; Subcommands Reference</span><span class="toc-num">7</span></div>
+    <div class="toc-h2"><span>recon &lt;target&gt;</span><span class="toc-num">7</span></div>
+    <div class="toc-h2"><span>inventory, learn, suggest, categories</span><span class="toc-num">7</span></div>
+    <div class="toc-h2"><span>workflows, templates, update, shell</span><span class="toc-num">7</span></div>
+    <div class="toc-h2"><span>plugins</span><span class="toc-num">7</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>6 &nbsp; Complete Flag Reference</span><span class="toc-num">8</span></div>
+    <div class="toc-h2"><span>Core Flags</span><span class="toc-num">8</span></div>
+    <div class="toc-h2"><span>Scan Control Flags</span><span class="toc-num">8</span></div>
+    <div class="toc-h2"><span>Input Flags</span><span class="toc-num">8</span></div>
+    <div class="toc-h2"><span>Output Flags</span><span class="toc-num">9</span></div>
+    <div class="toc-h2"><span>Investigation Flags</span><span class="toc-num">9</span></div>
+    <div class="toc-h2"><span>Chain of Custody Flags</span><span class="toc-num">9</span></div>
+    <div class="toc-h2"><span>OpSec Flags</span><span class="toc-num">9</span></div>
+    <div class="toc-h2"><span>Automation Flags</span><span class="toc-num">9</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>7 &nbsp; Scan Templates</span><span class="toc-num">10</span></div>
+    <div class="toc-h2"><span>All 14 Built-In Templates</span><span class="toc-num">10</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>8 &nbsp; Investigation Workflows</span><span class="toc-num">11</span></div>
+    <div class="toc-h2"><span>All 11 Workflows</span><span class="toc-num">11</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>9 &nbsp; SPOTLIGHT — Relationship Investigation Module</span><span class="toc-num">12</span></div>
+    <div class="toc-h2"><span>Overview &amp; Commands</span><span class="toc-num">12</span></div>
+    <div class="toc-h2"><span>The 13 Investigation Phases</span><span class="toc-num">12</span></div>
+    <div class="toc-h2"><span>SPOTLIGHT Flags Reference</span><span class="toc-num">13</span></div>
+    <div class="toc-h2"><span>SPOTLIGHT Examples</span><span class="toc-num">13</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>10 &nbsp; Tool Catalog — All 68 Tools</span><span class="toc-num">14</span></div>
+    <div class="toc-h2"><span>Username Enumeration (7 tools)</span><span class="toc-num">14</span></div>
+    <div class="toc-h2"><span>Email Intelligence (3 tools)</span><span class="toc-num">15</span></div>
+    <div class="toc-h2"><span>Phone Intelligence (2 tools)</span><span class="toc-num">15</span></div>
+    <div class="toc-h2"><span>Network Forensics (7 tools)</span><span class="toc-num">15</span></div>
+    <div class="toc-h2"><span>Metadata &amp; File Analysis (7 tools)</span><span class="toc-num">16</span></div>
+    <div class="toc-h2"><span>And all remaining categories…</span><span class="toc-num">17</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>11 &nbsp; Session Tracking</span><span class="toc-num">22</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>12 &nbsp; Chain of Custody &amp; Evidence Bags</span><span class="toc-num">23</span></div>
+    <div class="toc-h2"><span>How It Works</span><span class="toc-num">23</span></div>
+    <div class="toc-h2"><span>MANIFEST.json &amp; CHAIN_OF_CUSTODY.json</span><span class="toc-num">23</span></div>
+    <div class="toc-h2"><span>Verifying Integrity</span><span class="toc-num">23</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>13 &nbsp; OpSec &amp; Anonymity</span><span class="toc-num">24</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>14 &nbsp; Report Export</span><span class="toc-num">25</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>15 &nbsp; Auto-Update System</span><span class="toc-num">25</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>16 &nbsp; Plugin System &amp; Marketplace</span><span class="toc-num">26</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>17 &nbsp; Troubleshooting</span><span class="toc-num">27</span></div>
+  </div>
+
+  <div class="toc-section">
+    <div class="toc-h1"><span>18 &nbsp; Forensics Glossary</span><span class="toc-num">28</span></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 1 — INTRODUCTION
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 1</div>
+    <h1>Introduction &amp; Overview</h1>
+    <div class="chapter-desc">What Project RECON is, what it does, and who it is for.</div>
+  </div>
+
+  <h2>What Is Project RECON?</h2>
+  <p>Project RECON (<strong>Rapid Evidence Collection &amp; OSINT Network</strong>) is a unified, command-line investigation workbench for macOS. It replaces the need to manually install, configure, and run dozens of separate open-source intelligence (OSINT) and digital forensics tools by orchestrating all of them through a single interface.</p>
+
+  <p>Built on top of the <strong>WhatsMyName</strong> project (a community-maintained database of 4,387+ sites that can be searched for usernames), RECON extends it into a full investigation platform with sessions, chain-of-custody evidence packaging, exposure scoring, relationship investigation, face recognition, and operational security controls.</p>
+
+  <div class="callout callout-info">
+    <div class="callout-icon">ℹ️</div>
+    <div class="callout-body">
+      <div class="callout-title">Built for Investigators</div>
+      Project RECON is designed for use by licensed private investigators, law enforcement, corporate security teams, and individuals conducting legal OSINT investigations. All outputs are structured for potential use as documented evidence.
+    </div>
+  </div>
+
+  <h2>Core Capabilities at a Glance</h2>
+  <div class="two-col">
+    <div class="col-card">
+      <div class="col-card-title">🔍 OSINT Orchestration</div>
+      <ul>
+        <li>68+ tools across 23 categories</li>
+        <li>Auto-detects input type (username / email / phone)</li>
+        <li>Runs tools in parallel — live progress dashboard</li>
+        <li>Deduplicates findings across all tools</li>
+        <li>4,387+ site database (WMN + Sherlock + Maigret)</li>
+      </ul>
+    </div>
+    <div class="col-card">
+      <div class="col-card-title">💑 SPOTLIGHT Module</div>
+      <ul>
+        <li>35+ relationship investigation tools</li>
+        <li>13 investigation phases</li>
+        <li>Instagram deep OSINT (4 tools)</li>
+        <li>Dating &amp; adult platform crawling</li>
+        <li>Behavioral metadata &amp; geolocation</li>
+      </ul>
+    </div>
+    <div class="col-card">
+      <div class="col-card-title">⚖️ Forensic Standards</div>
+      <ul>
+        <li>SHA-256 hash verification</li>
+        <li>Chain-of-custody logging</li>
+        <li>Evidence bag packaging</li>
+        <li>Timestamped action logs</li>
+        <li>MANIFEST.json + CHAIN_OF_CUSTODY.json</li>
+      </ul>
+    </div>
+    <div class="col-card">
+      <div class="col-card-title">🛡️ Operational Security</div>
+      <ul>
+        <li>VPN detection (refuse to run if unprotected)</li>
+        <li>Tor routing — built-in SOCKS5 support</li>
+        <li>Rate limiting + random jitter delays</li>
+        <li>OpSec warnings before active scans</li>
+        <li>Proxy support for all tools</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Legal &amp; Ethical Notice</h2>
+  <div class="callout callout-danger">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body">
+      <div class="callout-title">Important — Read Before Use</div>
+      <p>Project RECON performs open-source intelligence collection from publicly available sources. You are responsible for ensuring your use complies with all applicable laws in your jurisdiction, including the Computer Fraud and Abuse Act (CFAA), GDPR, CCPA, and relevant state/local statutes.</p>
+      <p style="margin-bottom:0;"><strong>Never use this tool to:</strong> harass individuals, stalk persons without legal authority, access private systems without permission, or collect data on minors. Always obtain required legal authorization before conducting investigations on third parties.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 2 — INSTALLATION
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 2</div>
+    <h1>System Requirements &amp; Installation</h1>
+    <div class="chapter-desc">Everything you need to get Project RECON running on your machine.</div>
+  </div>
+
+  <h2>Requirements</h2>
+  <table>
+    <thead><tr><th>Requirement</th><th>Minimum</th><th>Recommended</th></tr></thead>
+    <tbody>
+      <tr><td>Operating System</td><td>macOS 12 Monterey</td><td>macOS 14 Sonoma or newer</td></tr>
+      <tr><td>Python</td><td>3.10</td><td>3.12+</td></tr>
+      <tr><td>Homebrew</td><td>Not required (but recommended)</td><td>Installed</td></tr>
+      <tr><td>Disk Space</td><td>500 MB</td><td>2 GB (full tool suite)</td></tr>
+      <tr><td>RAM</td><td>4 GB</td><td>8 GB+</td></tr>
+      <tr><td>Internet</td><td>Required for scanning</td><td>Stable broadband</td></tr>
+      <tr><td>Docker</td><td>Optional</td><td>Required for CompreFace face recognition</td></tr>
+    </tbody>
+  </table>
+
+  <h2>One-Command Install (Portable Drive)</h2>
+  <p>If RECON ships on a portable drive, plug it in and run:</p>
+  <pre>bash /Volumes/YOUR_DRIVE/RECON_WorkBench/install.sh</pre>
+  <p>The installer will automatically:</p>
+  <ul>
+    <li>Copy Project RECON to <code>~/RECON_WorkBench</code></li>
+    <li>Create an isolated Python virtual environment at <code>~/RECON_WorkBench/.venv</code></li>
+    <li>Install all 40+ Python OSINT tools via pip</li>
+    <li>Install Homebrew tools (nmap, tshark, tcpdump, exiftool, etc.) if Homebrew is present</li>
+    <li>Add the <code>recon</code> and <code>spotlight</code> commands to your shell PATH</li>
+    <li>Set up a weekly auto-update job (Mondays at 3:00 AM)</li>
+  </ul>
+
+  <h2>Install from GitHub</h2>
+  <pre>git clone https://github.com/newbiehackler/project-recon.git
+cd project-recon
+bash install.sh</pre>
+
+  <h2>Manual / Developer Install</h2>
+  <pre>git clone https://github.com/newbiehackler/project-recon.git
+cd project-recon
+python3 -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -e .
+
+<span class="cm"># Core OSINT tools</span>
+pip install sherlock-project maigret social-analyzer socialscan holehe h8mail nexfil
+
+<span class="cm"># SPOTLIGHT tools</span>
+pip install ghunt instaloader xeuledoc snscrape pyktok redditsfinder telepathy
+pip install osrframework crosslinked linkedin2username daProfiler photon-crawler toutatis</pre>
+
+  <h2>Verifying Installation</h2>
+  <pre>recon --version        <span class="cm"># Should print version 3.3.0</span>
+recon --list-tools     <span class="cm"># Shows all tools and their install status</span>
+recon inventory        <span class="cm"># Full system audit</span></pre>
+
+  <h2>Uninstalling</h2>
+  <pre>bash ~/RECON_WorkBench/uninstall.sh</pre>
+  <p>This removes RECON, the <code>recon</code>/<code>spotlight</code> launchers, auto-update jobs, and shell PATH entries. Your Homebrew and pip tools remain untouched — only RECON-specific components are removed.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 3 — ARCHITECTURE
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 3</div>
+    <h1>Architecture &amp; Directory Structure</h1>
+    <div class="chapter-desc">Understanding how Project RECON is organized internally.</div>
+  </div>
+
+  <h2>File Layout</h2>
+  <pre>~/RECON_WorkBench/
+├── install.sh              <span class="cm"># One-command portable installer</span>
+├── update.sh               <span class="cm"># Auto-update script (called by launchd weekly)</span>
+├── uninstall.sh            <span class="cm"># Clean removal script</span>
+├── whatsmyname/            <span class="cm"># Core Python package</span>
+│   ├── recon_cli.py        <span class="cm"># Main CLI entry point — all flags parsed here</span>
+│   ├── orchestrator.py     <span class="cm"># Tool execution engine (parallel runner)</span>
+│   ├── tool_catalog.py     <span class="cm"># 68 tool definitions, 10+ examples each</span>
+│   ├── workflows.py        <span class="cm"># 11 investigation workflow definitions</span>
+│   ├── templates.py        <span class="cm"># 14 scan template profiles</span>
+│   ├── spotlight.py        <span class="cm"># SPOTLIGHT relationship investigation CLI</span>
+│   ├── sessions.py         <span class="cm"># Session persistence (&lt;name&gt;.json in ~/.recon/sessions/)</span>
+│   ├── evidence.py         <span class="cm"># EvidenceBag: SHA-256 hashing, chain of custody</span>
+│   ├── enrichment.py       <span class="cm"># DNS/IP enrichment of findings</span>
+│   ├── reporter.py         <span class="cm"># JSON / CSV / HTML report generation</span>
+│   ├── shell.py            <span class="cm"># Interactive REPL shell</span>
+│   ├── plugin_loader.py    <span class="cm"># Plugin discovery and loading</span>
+│   └── data/
+│       ├── wmn-data.json          <span class="cm"># 731 core WMN sites</span>
+│       └── extended_sites.json   <span class="cm"># 1,076 curated additions</span>
+├── tools/                  <span class="cm"># Bundled git-cloned tools</span>
+│   ├── blackbird/          <span class="cm"># Username search (600+ sites)</span>
+│   ├── cupidcr4wl/         <span class="cm"># Dating/adult platform OSINT</span>
+│   ├── compreface/         <span class="cm"># Face recognition via Docker</span>
+│   ├── untappd-scraper/    <span class="cm"># Social behavior &amp; geolocation intel</span>
+│   ├── 4n6notebooks/       <span class="cm"># iOS forensic Jupyter notebooks</span>
+│   ├── keychain-decrypter/ <span class="cm"># iOS keychain decryption</span>
+│   ├── osint-tools-cli/    <span class="cm"># 1,000+ OSINT tool browser (Rust TUI)</span>
+│   ├── osintgram/          <span class="cm"># Instagram deep OSINT</span>
+│   ├── instaloctrack/      <span class="cm"># Instagram geolocation mapping</span>
+│   ├── pwnedornot/         <span class="cm"># HIBP breach checker + password recovery</span>
+│   ├── metagoofil/         <span class="cm"># Public document metadata extractor</span>
+│   └── spiderfoot/         <span class="cm"># 200+ module OSINT automation</span>
+└── wmn-data.json           <span class="cm"># WhatsMyName site database (4,387+ sites)</span></pre>
+
+  <h2>User Data Directory (~/.recon/)</h2>
+  <pre>~/.recon/
+├── plugins/            <span class="cm"># Drop .py plugin files here — auto-loaded on start</span>
+├── sessions/           <span class="cm"># Investigation sessions as JSON files</span>
+├── spotlight_plugins/  <span class="cm"># SPOTLIGHT module plugins</span>
+├── evidence/           <span class="cm"># Evidence bags from --evidence-bag runs</span>
+├── exports/            <span class="cm"># Exported reports (JSON, HTML, CSV, PDF)</span>
+└── logs/               <span class="cm"># Auto-update logs</span></pre>
+
+  <h2>Module Overview</h2>
+  <table>
+    <thead><tr><th>Module</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>recon_cli.py</code></td><td>Argument parsing, flag routing, main entry point for <code>recon</code> command</td></tr>
+      <tr><td><code>orchestrator.py</code></td><td>Launches tools as subprocesses, manages parallel execution, semaphore limiting, retries, proxy injection, jitter</td></tr>
+      <tr><td><code>tool_catalog.py</code></td><td>Defines all 68 tools: name, command, category, description, install_hint, input_types, passive flag, examples, works_well_with</td></tr>
+      <tr><td><code>evidence.py</code></td><td>EvidenceBag class: store_artifact(), store_raw_output(), verify_integrity(), finalize() → writes MANIFEST.json + CHAIN_OF_CUSTODY.json</td></tr>
+      <tr><td><code>sessions.py</code></td><td>Session creation, resume, history, finding aggregation — stored as JSON in ~/.recon/sessions/</td></tr>
+      <tr><td><code>enrichment.py</code></td><td>DNS/IP/reverse-DNS enrichment of scan findings</td></tr>
+      <tr><td><code>templates.py</code></td><td>14 ScanTemplate objects: defines tool lists, timeout multipliers, passive/deep/quick flags</td></tr>
+      <tr><td><code>workflows.py</code></td><td>11 investigation workflow definitions with step-by-step tool chaining</td></tr>
+      <tr><td><code>spotlight.py</code></td><td>SPOTLIGHT CLI: 35+ relationship tools, 3 scan modes, 13 phases</td></tr>
+      <tr><td><code>shell.py</code></td><td>Interactive REPL: history, auto-complete, session management</td></tr>
+      <tr><td><code>plugin_loader.py</code></td><td>Discovers, validates, and loads plugins from ~/.recon/plugins/</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 4 — QUICK START
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 4</div>
+    <h1>Quick Start</h1>
+    <div class="chapter-desc">Get your first scan running in under 60 seconds.</div>
+  </div>
+
+  <h2>First Run</h2>
+  <p>After installation, update the site database to get the latest detection data from Sherlock and Maigret:</p>
+  <pre>recon update</pre>
+  <p>This fetches ~3,500 additional site definitions and caches them locally. After deduplication you will have <strong>4,387+ unique sites</strong> to search against.</p>
+
+  <h2>Basic Scans</h2>
+
+  <h3>Username Search</h3>
+  <pre>recon johndoe</pre>
+  <p>RECON auto-detects that <code>johndoe</code> is a username and runs all applicable tools in parallel. It also generates email variants (<code>johndoe@gmail.com</code>, <code>@yahoo.com</code>, etc.) and runs email intelligence tools against those automatically.</p>
+
+  <h3>Email Search</h3>
+  <pre>recon johndoe@gmail.com</pre>
+  <p>Runs: holehe (service registrations), h8mail (breach databases), socialscan (platform availability), theHarvester (domain intelligence).</p>
+
+  <h3>Phone Number Search</h3>
+  <pre>recon +15551234567</pre>
+  <p>Runs: phoneinfoga (carrier/location/search links), ignorant (WhatsApp/Telegram/Signal/Snapchat registration check).</p>
+
+  <h3>Common Useful Commands</h3>
+  <pre><span class="cm"># Deep scan — all tools, 2× timeouts</span>
+recon johndoe --deep
+
+<span class="cm"># Export as HTML report and open in browser</span>
+recon johndoe -o html --open
+
+<span class="cm"># Quick scan (top 3 fastest tools, ~60 seconds)</span>
+recon johndoe --quick
+
+<span class="cm"># Use a predefined template</span>
+recon johndoe --template full-osint
+
+<span class="cm"># Track in a named session with examiner tag</span>
+recon johndoe --session case001 --case-id CASE-2024-001 --examiner "Agent Smith"
+
+<span class="cm"># Dry run — preview what WOULD execute without running anything</span>
+recon johndoe --dry-run
+
+<span class="cm"># Suggest next tools after scan</span>
+recon johndoe --discover
+
+<span class="cm"># Calculate exposure risk score (1–100)</span>
+recon johndoe --score</pre>
+
+  <h2>Understanding the Output</h2>
+  <p>When a scan completes, RECON displays:</p>
+  <ul>
+    <li><strong>Live progress bar</strong> — shows each tool running, elapsed time, findings per tool</li>
+    <li><strong>Summary table</strong> — total unique accounts found, tools completed/failed, duration</li>
+    <li><strong>Findings grouped by category</strong> — Social, Dating, Finance, Gaming, etc.</li>
+    <li><strong>Exposure score</strong> (if <code>--score</code>) — 1–100 risk rating with category breakdown</li>
+    <li><strong>Next-step suggestions</strong> (if <code>--discover</code>) — ranked tool recommendations</li>
+  </ul>
+
+  <div class="evidence-box">
+    <h4>📄 JSON Report Structure</h4>
+    <pre style="background:transparent;border:none;padding:0;color:#e8e8e8;font-size:8pt;">{
+  "target": "johndoe",
+  "input_type": "username",
+  "timestamp": "2024-01-15T14:30:00+00:00",
+  "summary": {
+    "total_unique_accounts": 47,
+    "tools_completed": 8,
+    "tools_failed": 0,
+    "elapsed_seconds": 68.3
+  },
+  "tools": [
+    {"name": "wmn",      "status": "completed", "findings": 23, "elapsed": 45.2},
+    {"name": "sherlock", "status": "completed", "findings": 18, "elapsed": 30.1}
+  ],
+  "findings": [
+    {"source": "wmn", "site": "Instagram", "url": "https://instagram.com/johndoe", "category": "social"},
+    {"source": "sherlock", "site": "GitHub", "url": "https://github.com/johndoe", "category": "coding"}
+  ]
+}</pre>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 5 — SUBCOMMANDS
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 5</div>
+    <h1>Subcommands Reference</h1>
+    <div class="chapter-desc">Every subcommand available in the <code>recon</code> CLI.</div>
+  </div>
+
+  <table>
+    <thead><tr><th>Subcommand</th><th>Description</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><code>recon &lt;target&gt;</code></td><td>Scan a username, email, or phone number</td><td><code>recon johndoe</code></td></tr>
+      <tr><td><code>recon inventory</code></td><td>Full system audit — shows all 68 tools with install status, version where detectable, and category</td><td><code>recon inventory</code></td></tr>
+      <tr><td><code>recon learn &lt;tool&gt;</code></td><td>Show beginner-friendly guide for a specific tool: description, 10+ examples, install hint, and next-step suggestions</td><td><code>recon learn sherlock</code></td></tr>
+      <tr><td><code>recon suggest &lt;tool&gt;</code></td><td>Get ranked recommendations for what to run next after using a given tool, with reasoning</td><td><code>recon suggest holehe</code></td></tr>
+      <tr><td><code>recon categories</code></td><td>Browse all 23 tool categories with tool lists</td><td><code>recon categories</code></td></tr>
+      <tr><td><code>recon workflows</code></td><td>List all 11 investigation workflows with step breakdowns</td><td><code>recon workflows</code></td></tr>
+      <tr><td><code>recon templates</code></td><td>List all 14 scan templates with tool lists and flags</td><td><code>recon templates</code></td></tr>
+      <tr><td><code>recon update</code></td><td>Update all tools and site database</td><td><code>recon update --pip</code></td></tr>
+      <tr><td><code>recon shell</code></td><td>Launch the interactive REPL investigation shell with history and auto-complete</td><td><code>recon shell</code></td></tr>
+      <tr><td><code>recon explain &lt;term&gt;</code></td><td>Explain a forensics concept or term (chain-of-custody, OSINT, passive, active, SHA-256, etc.)</td><td><code>recon explain "chain of custody"</code></td></tr>
+      <tr><td><code>recon plugins</code></td><td>List, search, install, create, validate, and submit plugins</td><td><code>recon plugins search</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2>recon update — Subcommand Options</h2>
+  <pre>recon update              <span class="cm"># Update everything (pip + brew + bundled tools + site data)</span>
+recon update --pip        <span class="cm"># Only update Python pip tools</span>
+recon update --brew       <span class="cm"># Only update Homebrew tools</span>
+recon update --bundled    <span class="cm"># Only update git-cloned bundled tools (git pull)</span></pre>
+
+  <h2>recon plugins — All Plugin Subcommands</h2>
+  <pre>recon plugins                      <span class="cm"># List installed plugins</span>
+recon plugins search               <span class="cm"># Browse all marketplace plugins</span>
+recon plugins search "username"    <span class="cm"># Search marketplace for keyword</span>
+recon plugins install social-deep  <span class="cm"># Install a free plugin</span>
+recon plugins install premium --key RECON-PREM-abc123  <span class="cm"># Install paid plugin</span>
+recon plugins uninstall my-plugin  <span class="cm"># Remove a plugin</span>
+recon plugins create my-scanner    <span class="cm"># Scaffold a new plugin with boilerplate</span>
+recon plugins validate my.py       <span class="cm"># Validate plugin before submission</span>
+recon plugins submit my.py         <span class="cm"># Submit to marketplace via GitHub Issue</span></pre>
+
+  <h2>recon learn — What It Shows</h2>
+  <p>Running <code>recon learn &lt;toolname&gt;</code> displays a structured guide for any of the 68 tools, including:</p>
+  <ul>
+    <li>Full description of the tool</li>
+    <li>Install instructions (<code>brew install</code>, <code>pip install</code>, or git clone)</li>
+    <li>10+ practical command examples with descriptions</li>
+    <li>What input types the tool accepts (username / email / phone / file / IP)</li>
+    <li>Whether the tool is passive (no direct target contact) or active</li>
+    <li>Recommended "next tools" to chain with</li>
+  </ul>
+  <pre>recon learn nmap          <span class="cm"># Network scanner guide</span>
+recon learn exiftool      <span class="cm"># Metadata extraction guide</span>
+recon learn toutatis      <span class="cm"># Instagram OSINT guide</span>
+recon learn john          <span class="cm"># Password cracking guide</span></pre>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 6 — FLAG REFERENCE
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 6</div>
+    <h1>Complete Flag Reference</h1>
+    <div class="chapter-desc">Every flag available in <code>recon &lt;target&gt; [flags]</code>, organized by function.</div>
+  </div>
+
+  <h2>Core Flags</h2>
+  <table class="flag-table">
+    <thead><tr><th>Flag</th><th>Description</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><code>--type username|email|phone</code></td><td>Override input auto-detection. Useful when input is ambiguous.</td><td><code>--type email</code></td></tr>
+      <tr><td><code>--tools wmn,sherlock</code></td><td>Comma-separated list of specific tools to run. All others are skipped.</td><td><code>--tools holehe,h8mail</code></td></tr>
+      <tr><td><code>--timeout 120</code></td><td>Per-tool timeout in seconds. Default varies by tool.</td><td><code>--timeout 300</code></td></tr>
+      <tr><td><code>-o json|csv|html</code></td><td>Export report format. File named &lt;target&gt;.&lt;ext&gt; by default.</td><td><code>-o html</code></td></tr>
+      <tr><td><code>--output-file path</code></td><td>Custom output file path (overrides default naming).</td><td><code>--output-file /tmp/case001.json</code></td></tr>
+      <tr><td><code>--no-banner</code></td><td>Skip the ASCII banner (useful for scripting/automation).</td><td><code>--no-banner</code></td></tr>
+      <tr><td><code>--list-tools</code></td><td>Show all 68 tools with install status and skip the scan.</td><td><code>--list-tools</code></td></tr>
+      <tr><td><code>-V, --version</code></td><td>Print version and exit.</td><td><code>-V</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Scan Control Flags</h2>
+  <table class="flag-table">
+    <thead><tr><th>Flag</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>--deep</code></td><td>Run all applicable tools with 2× timeouts. Most thorough, slowest mode.</td></tr>
+      <tr><td><code>--quick</code></td><td>Run only the 3 fastest tools. Under 60 seconds for a result.</td></tr>
+      <tr><td><code>--passive</code></td><td>Non-intrusive tools only — tools flagged as passive in the catalog. Does not directly contact the target.</td></tr>
+      <tr><td><code>--dry-run</code></td><td>Preview which tools would run and with what arguments, without executing anything.</td></tr>
+      <tr><td><code>--template &lt;name&gt;</code></td><td>Use a predefined scan template (see Chapter 7 for full list).</td></tr>
+      <tr><td><code>--parallel N</code></td><td>Maximum number of tools to run concurrently. Default: unlimited. Useful for rate-limited connections.</td></tr>
+      <tr><td><code>--retries N</code></td><td>Number of times to retry a failed tool. Default: 0.</td></tr>
+      <tr><td><code>--proxy URL</code></td><td>Route all tool requests through an HTTP/SOCKS proxy.</td></tr>
+      <tr><td><code>--tor</code></td><td>Route through Tor (requires Tor running on port 9050). Builds <code>socks5://127.0.0.1:9050</code> proxy URL automatically.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Input Flags</h2>
+  <table class="flag-table">
+    <thead><tr><th>Flag</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>-f targets.txt</code></td><td>Read multiple targets from a file (one per line). Runs a full scan for each.</td></tr>
+      <tr><td><code>--stdin</code></td><td>Read targets from stdin. Useful for piping: <code>cat targets.txt | recon --stdin</code></td></tr>
+      <tr><td><code>--no-email-expand</code></td><td>Skip automatic generation of email variants for username searches.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Output Flags</h2>
+  <table class="flag-table">
+    <thead><tr><th>Flag</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>--raw</code></td><td>Print full raw stdout and stderr from each tool after the scan completes.</td></tr>
+      <tr><td><code>--save-raw ./dir</code></td><td>Save per-tool stdout and stderr to a directory as separate text files.</td></tr>
+      <tr><td><code>--no-color</code></td><td>Disable all ANSI color codes. Use for logging, CI/CD pipelines, or accessibility.</td></tr>
+      <tr><td><code>--open</code></td><td>Automatically open the HTML report in your default browser after export.</td></tr>
+      <tr><td><code>--pdf</code></td><td>Export report as PDF (requires weasyprint or wkhtmltopdf).</td></tr>
+      <tr><td><code>--markdown</code></td><td>Export the scan report as a Markdown (<code>.md</code>) file.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Investigation Flags</h2>
+  <table class="flag-table">
+    <thead><tr><th>Flag</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>--session &lt;name&gt;</code></td><td>Create or resume a named investigation session. All findings are appended.</td></tr>
+      <tr><td><code>--case-id ID</code></td><td>Tag the scan with a formal case identifier (e.g., CASE-2024-001). Stored in session and reports.</td></tr>
+      <tr><td><code>--notes "text"</code></td><td>Attach investigator notes to the session.</td></tr>
+      <tr><td><code>--examiner "Name"</code></td><td>Tag the examiner's name. Appears in evidence bag and chain of custody.</td></tr>
+      <tr><td><code>--discover</code></td><td>After the scan, show ranked suggestions for which tools to run next and why.</td></tr>
+      <tr><td><code>--enrich</code></td><td>Enrich findings with DNS lookups, IP geolocation, and reverse DNS data.</td></tr>
+      <tr><td><code>--score</code></td><td>Calculate a 1–100 exposure risk score with breakdown by category.</td></tr>
+      <tr><td><code>--correlate</code></td><td>Cross-reference findings across multiple tools — identify URLs appearing in multiple sources.</td></tr>
+      <tr><td><code>--diff prev.json</code></td><td>Compare current scan against a previous JSON export. Shows new and removed findings.</td></tr>
+      <tr><td><code>--filter "cat=social"</code></td><td>Filter findings by category, tool, confidence, or site. E.g. <code>--filter category=dating</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Chain of Custody Flags</h2>
+  <table class="flag-table">
+    <thead><tr><th>Flag</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>--evidence-bag ./dir</code></td><td>Create a forensic evidence bag directory. All tool outputs, reports, and raw data are stored with SHA-256 hashes.</td></tr>
+      <tr><td><code>--chain-of-custody</code></td><td>Generate a timestamped CHAIN_OF_CUSTODY.json alongside every evidence artifact.</td></tr>
+      <tr><td><code>--hash-verify</code></td><td>After writing outputs, verify all file hashes match recorded values. Alerts on any tampering.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>OpSec Flags</h2>
+  <table class="flag-table">
+    <thead><tr><th>Flag</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>--opsec-check</code></td><td>Before running, warn about any active (non-passive) tools that will directly contact the target. Prompts for confirmation.</td></tr>
+      <tr><td><code>--vpn-check</code></td><td>Detect VPN presence (checks for utun/tun/wg network interfaces). Exit with error if no VPN detected.</td></tr>
+      <tr><td><code>--rate-limit N</code></td><td>Maximum requests per second across all tools. Prevents triggering rate-limit bans.</td></tr>
+      <tr><td><code>--jitter</code></td><td>Add random delays between tool launches (0.5–3 seconds). Mimics human behavior, reduces detection risk.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Automation Flags</h2>
+  <table class="flag-table">
+    <thead><tr><th>Flag</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>--webhook URL</code></td><td>POST a JSON summary to a webhook URL when the scan completes. For integration with Slack, Discord, Zapier, etc.</td></tr>
+      <tr><td><code>--notify</code></td><td>Send a macOS desktop notification when the scan finishes.</td></tr>
+      <tr><td><code>--on-finding "cmd {}"</code></td><td>Execute a shell command for each finding. <code>{}</code> is replaced with the finding URL. E.g. <code>--on-finding "echo Found: {}"</code></td></tr>
+      <tr><td><code>--explain "term"</code></td><td>Print a plain-English explanation of a forensics term. Can also be used as: <code>recon explain "chain of custody"</code></td></tr>
+      <tr><td><code>--cheatsheet &lt;tool&gt;</code></td><td>Quick reference card for a tool — condensed examples, no full guide.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 7 — TEMPLATES
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 7</div>
+    <h1>Scan Templates</h1>
+    <div class="chapter-desc">Predefined scan profiles for common investigation types. Use with <code>recon &lt;target&gt; --template &lt;name&gt;</code></div>
+  </div>
+
+  <table>
+    <thead><tr><th>Template Name</th><th>Description</th><th>Mode</th><th>Tools</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>full-osint</code></td>
+        <td>Maximum coverage — all applicable tools, 2× timeouts, email expansion</td>
+        <td>Deep</td>
+        <td>All</td>
+      </tr>
+      <tr>
+        <td><code>passive-only</code></td>
+        <td>Non-intrusive only — tools that don't directly contact the target</td>
+        <td>Passive</td>
+        <td>wmn, sherlock, maigret, social-analyzer, socialscan, nexfil, holehe, h8mail, ignorant, theHarvester</td>
+      </tr>
+      <tr>
+        <td><code>quick-check</code></td>
+        <td>Fast 60-second scan — top 3 fastest tools only</td>
+        <td>Quick</td>
+        <td>wmn, sherlock, socialscan</td>
+      </tr>
+      <tr>
+        <td><code>breach-check</code></td>
+        <td>Focus on data breaches and email exposure</td>
+        <td>Normal</td>
+        <td>holehe, h8mail, socialscan</td>
+      </tr>
+      <tr>
+        <td><code>username-deep</code></td>
+        <td>Deep username enumeration across all username tools</td>
+        <td>Deep</td>
+        <td>wmn, sherlock, maigret, social-analyzer, socialscan, nexfil</td>
+      </tr>
+      <tr>
+        <td><code>phone-intel</code></td>
+        <td>Phone number investigation — carrier + platform registrations</td>
+        <td>Normal</td>
+        <td>phoneinfoga, ignorant</td>
+      </tr>
+      <tr>
+        <td><code>email-full</code></td>
+        <td>Complete email investigation — registrations + breaches + domain</td>
+        <td>Normal</td>
+        <td>holehe, h8mail, socialscan, theHarvester</td>
+      </tr>
+      <tr>
+        <td><code>relationship</code></td>
+        <td>SPOTLIGHT FULL — complete relationship investigation (35+ tools, 13 phases)</td>
+        <td>Deep</td>
+        <td>35+ tools (see Chapter 9)</td>
+      </tr>
+      <tr>
+        <td><code>dating-sweep</code></td>
+        <td>SPOTLIGHT Dating — focused sweep of dating/hookup/adult platforms</td>
+        <td>Quick</td>
+        <td>cupidcr4wl, blackbird, maigret, toutatis, holehe, socialscan, onlyfinder, ignorant</td>
+      </tr>
+      <tr>
+        <td><code>spotlight-quick</code></td>
+        <td>SPOTLIGHT Quick — 7 highest-impact tools, under 2 minutes</td>
+        <td>Quick</td>
+        <td>sherlock, blackbird, cupidcr4wl, holehe, socialscan, ignorant, toutatis</td>
+      </tr>
+      <tr>
+        <td><code>spotlight-instagram</code></td>
+        <td>SPOTLIGHT Instagram — complete Instagram account investigation</td>
+        <td>Deep</td>
+        <td>toutatis, osintgram, instaloader, instaloctrack, sherlock, exiftool</td>
+      </tr>
+      <tr>
+        <td><code>spotlight-email</code></td>
+        <td>SPOTLIGHT Email — full email identity chain (registrations + breaches + Google + profiling)</td>
+        <td>Deep</td>
+        <td>holehe, h8mail, ghunt, infoga, pwnedornot, socialscan, daProfiler, spiderfoot</td>
+      </tr>
+      <tr>
+        <td><code>spotlight-phone</code></td>
+        <td>SPOTLIGHT Phone — carrier + messaging app registrations + Telegram</td>
+        <td>Normal</td>
+        <td>phoneinfoga, ignorant, telepathy, telerecon</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Using Templates</h2>
+  <pre><span class="cm"># Full investigation — no shortcuts</span>
+recon johndoe --template full-osint
+
+<span class="cm"># Dating platforms only — fast</span>
+recon johndoe --template dating-sweep
+
+<span class="cm"># Complete relationship investigation</span>
+recon johndoe --template relationship --session case001 --examiner "Det. Smith"
+
+<span class="cm"># Instagram deep dive with evidence bag</span>
+recon johndoe --template spotlight-instagram \
+  --evidence-bag ./evidence/ig_case/ --chain-of-custody
+
+<span class="cm"># Email breach check</span>
+recon target@gmail.com --template breach-check -o json</pre>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 8 — WORKFLOWS
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 8</div>
+    <h1>Investigation Workflows</h1>
+    <div class="chapter-desc">Step-by-step tool-chaining guides for common investigation types. View with <code>recon workflows</code></div>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-icon">ℹ️</div>
+    <div class="callout-body">
+      <div class="callout-title">What Are Workflows?</div>
+      Workflows are ordered sequences of tools, each with a specific purpose. Unlike templates (which run in parallel), workflows are intended to be followed step-by-step — the output of one tool informs the input of the next.
+    </div>
+  </div>
+
+  <h2>Workflow 1 — Full Username OSINT</h2>
+  <div class="workflow-step"><div class="step-num">1</div><div class="step-content"><span class="step-tool">wmn</span> — Enumerate username across 4,300+ sites</div></div>
+  <div class="workflow-step"><div class="step-num">2</div><div class="step-content"><span class="step-tool">sherlock</span> — Cross-validate with Sherlock's detection engine</div></div>
+  <div class="workflow-step"><div class="step-num">3</div><div class="step-content"><span class="step-tool">maigret</span> — Deep search with profile data extraction</div></div>
+  <div class="workflow-step"><div class="step-num">4</div><div class="step-content"><span class="step-tool">holehe</span> — Check email variants for service registrations</div></div>
+  <div class="workflow-step"><div class="step-num">5</div><div class="step-content"><span class="step-tool">h8mail</span> — Search email variants in breach databases</div></div>
+  <div class="workflow-step"><div class="step-num">6</div><div class="step-content"><span class="step-tool">exiftool</span> — Extract metadata from any discovered profile images</div></div>
+
+  <h2>Workflow 2 — Email Intelligence</h2>
+  <div class="workflow-step"><div class="step-num">1</div><div class="step-content"><span class="step-tool">holehe</span> — Check which services the email is registered on</div></div>
+  <div class="workflow-step"><div class="step-num">2</div><div class="step-content"><span class="step-tool">h8mail</span> — Search for the email in data breaches</div></div>
+  <div class="workflow-step"><div class="step-num">3</div><div class="step-content"><span class="step-tool">socialscan</span> — Verify email availability on major platforms</div></div>
+  <div class="workflow-step"><div class="step-num">4</div><div class="step-content"><span class="step-tool">theHarvester</span> — Find related emails and subdomains from the domain</div></div>
+  <div class="workflow-step"><div class="step-num">5</div><div class="step-content"><span class="step-tool">whois</span> — Look up the email's domain for registrant info</div></div>
+  <div class="workflow-step"><div class="step-num">6</div><div class="step-content"><span class="step-tool">dig</span> — Check DNS records (MX, SPF, DKIM) for the domain</div></div>
+
+  <h2>Workflow 3 — Phone Number Investigation</h2>
+  <div class="workflow-step"><div class="step-num">1</div><div class="step-content"><span class="step-tool">phoneinfoga</span> — Get carrier, line type, and location data</div></div>
+  <div class="workflow-step"><div class="step-num">2</div><div class="step-content"><span class="step-tool">ignorant</span> — Check which platforms the number is registered on (WhatsApp, Telegram, Signal, Snapchat)</div></div>
+  <div class="workflow-step"><div class="step-num">3</div><div class="step-content"><span class="step-tool">holehe</span> — If you find an associated email, check its service registrations</div></div>
+  <div class="workflow-step"><div class="step-num">4</div><div class="step-content"><span class="step-tool">sherlock</span> — If you find a username, enumerate profiles across platforms</div></div>
+
+  <h2>Workflow 4 — Network Reconnaissance</h2>
+  <div class="workflow-step"><div class="step-num">1</div><div class="step-content"><span class="step-tool">ping</span> — Verify target is alive</div></div>
+  <div class="workflow-step"><div class="step-num">2</div><div class="step-content"><span class="step-tool">traceroute</span> — Map the network path</div></div>
+  <div class="workflow-step"><div class="step-num">3</div><div class="step-content"><span class="step-tool">whois</span> — Look up IP/domain ownership</div></div>
+  <div class="workflow-step"><div class="step-num">4</div><div class="step-content"><span class="step-tool">dig</span> — Enumerate all DNS records</div></div>
+  <div class="workflow-step"><div class="step-num">5</div><div class="step-content"><span class="step-tool">nmap</span> — Scan for open ports and services</div></div>
+  <div class="workflow-step"><div class="step-num">6</div><div class="step-content"><span class="step-tool">tshark</span> — Capture and analyze traffic</div></div>
+  <div class="workflow-step"><div class="step-num">7</div><div class="step-content"><span class="step-tool">curl</span> — Probe discovered web services</div></div>
+
+  <h2>Workflow 5 — Domain Investigation</h2>
+  <div class="workflow-step"><div class="step-num">1</div><div class="step-content"><span class="step-tool">whois</span> — Look up domain registration and ownership</div></div>
+  <div class="workflow-step"><div class="step-num">2</div><div class="step-content"><span class="step-tool">dig</span> — Check all DNS record types (A, MX, TXT, NS, CNAME)</div></div>
+  <div class="workflow-step"><div class="step-num">3</div><div class="step-content"><span class="step-tool">theHarvester</span> — Find emails, hosts, and subdomains</div></div>
+  <div class="workflow-step"><div class="step-num">4</div><div class="step-content"><span class="step-tool">nmap</span> — Scan the domain's IP for open services</div></div>
+  <div class="workflow-step"><div class="step-num">5</div><div class="step-content"><span class="step-tool">curl</span> — Check HTTP headers and server technology stack</div></div>
+
+  <h2>Workflow 6 — File Forensics</h2>
+  <div class="workflow-step"><div class="step-num">1</div><div class="step-content"><span class="step-tool">file</span> — Identify the real file type (never trust the extension)</div></div>
+  <div class="workflow-step"><div class="step-num">2</div><div class="step-content"><span class="step-tool">exiftool</span> — Extract all metadata (GPS, author, dates, camera model)</div></div>
+  <div class="workflow-step"><div class="step-num">3</div><div class="step-content"><span class="step-tool">strings</span> — Find readable text hidden in binary data</div></div>
+  <div class="workflow-step"><div class="step-num">4</div><div class="step-content"><span class="step-tool">xxd</span> — Hex dump to inspect raw bytes for anomalies</div></div>
+  <div class="workflow-step"><div class="step-num">5</div><div class="step-content"><span class="step-tool">steghide</span> — Check for steganographic data hidden in JPEG/BMP/WAV</div></div>
+
+  <h2>Workflow 7 — Passive OSINT Only (Maximum OpSec)</h2>
+  <p>All tools in this workflow are flagged <code>passive=True</code> in the tool catalog — they do not directly contact or interact with the investigation target.</p>
+  <div class="workflow-step"><div class="step-num">1</div><div class="step-content"><span class="step-tool">wmn</span> — Username enumeration (passive web checks)</div></div>
+  <div class="workflow-step"><div class="step-num">2</div><div class="step-content"><span class="step-tool">sherlock</span> — Profile detection (passive web checks)</div></div>
+  <div class="workflow-step"><div class="step-num">3</div><div class="step-content"><span class="step-tool">holehe</span> — Email registration checks (passive login probes)</div></div>
+  <div class="workflow-step"><div class="step-num">4</div><div class="step-content"><span class="step-tool">whois</span> — Domain/IP registration data (public records only)</div></div>
+  <div class="workflow-step"><div class="step-num">5</div><div class="step-content"><span class="step-tool">dig</span> — DNS lookups (public records only)</div></div>
+  <div class="workflow-step"><div class="step-num">6</div><div class="step-content"><span class="step-tool">exiftool</span> — Metadata extraction (local file analysis, no network)</div></div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 9 — SPOTLIGHT
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 9</div>
+    <h1>SPOTLIGHT — Relationship Investigation Module</h1>
+    <div class="chapter-desc">Comprehensive relationship, infidelity, and deception investigation with 35+ tools across 13 phases.</div>
+  </div>
+
+  <h2>Overview</h2>
+  <p>SPOTLIGHT is a dedicated investigation module within Project RECON, accessible via both the <code>spotlight</code> command and <code>recon --template relationship</code>. It is designed specifically for <strong>relationship investigations</strong> — situations where you need to determine whether someone is maintaining hidden online presences, secret accounts on dating platforms, or concealed social media activity.</p>
+
+  <div class="two-col">
+    <div class="col-card">
+      <div class="col-card-title">Full Mode (Default)</div>
+      <ul>
+        <li>35+ tools across 13 phases</li>
+        <li>Thorough and comprehensive</li>
+        <li>Runs 45–90 minutes typically</li>
+        <li>Covers every platform category</li>
+      </ul>
+    </div>
+    <div class="col-card">
+      <div class="col-card-title">Quick Mode (<code>--quick</code>)</div>
+      <ul>
+        <li>7 highest-impact tools</li>
+        <li>Under 2 minutes</li>
+        <li>sherlock, blackbird, cupidcr4wl</li>
+        <li>holehe, socialscan, ignorant, toutatis</li>
+      </ul>
+    </div>
+    <div class="col-card">
+      <div class="col-card-title">Dating Mode (<code>--dating</code>)</div>
+      <ul>
+        <li>8 dating/adult-focused tools</li>
+        <li>Covers hookup &amp; adult platforms</li>
+        <li>cupidcr4wl, blackbird, maigret</li>
+        <li>toutatis, holehe, socialscan, onlyfinder</li>
+      </ul>
+    </div>
+    <div class="col-card">
+      <div class="col-card-title">Input Formats</div>
+      <ul>
+        <li>Username: <code>spotlight johndoe</code></li>
+        <li>Email: <code>spotlight user@gmail.com</code></li>
+        <li>Phone: <code>spotlight +15551234567</code></li>
+        <li>All formats auto-detected</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>The 13 Investigation Phases</h2>
+  <table>
+    <thead><tr><th>Phase</th><th>Tools</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="phase-badge">1</span> Username Enumeration</td>
+        <td>wmn, sherlock, maigret, social-analyzer, socialscan, nexfil</td>
+        <td>Broadest coverage — 4,300+ sites across all categories</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">2</span> Dating / Relationship</td>
+        <td>blackbird, cupidcr4wl</td>
+        <td>600+ sites including all major dating, hookup, and adult platforms</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">3</span> Instagram Deep OSINT</td>
+        <td>toutatis, osintgram, instaloader, instaloctrack</td>
+        <td>Extract hidden contact info, full account analysis, geolocation mapping</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">4</span> Google Account</td>
+        <td>ghunt, xeuledoc</td>
+        <td>Gmail GAIA ID, Maps/YouTube activity, Drive document ownership</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">5</span> Telegram &amp; Messaging</td>
+        <td>telepathy, telerecon, ignorant</td>
+        <td>Telegram group membership, channel archives, phone platform registration check</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">6</span> Social Media Scrapers</td>
+        <td>snscrape, twint, redditsfinder, pyktok</td>
+        <td>Twitter/X, Reddit, TikTok archives without API keys</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">7</span> Email Intelligence</td>
+        <td>holehe, h8mail, infoga, pwnedornot</td>
+        <td>Service registrations, breach databases, leaked password recovery</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">8</span> People Profiling</td>
+        <td>daProfiler, spiderfoot, osrframework</td>
+        <td>Comprehensive identity dossier from social data, photos, usernames</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">9</span> Phone Intelligence</td>
+        <td>phoneinfoga</td>
+        <td>Carrier info, line type (mobile/landline/VOIP), Truecaller/Numverify lookup</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">10</span> Metadata &amp; Behavior</td>
+        <td>exiftool, metagoofil, untappd-scraper</td>
+        <td>GPS in photos, document author metadata, bar/venue check-in geolocation</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">11</span> Face Recognition</td>
+        <td>compreface</td>
+        <td>Match face from profile photo across all discovered images (requires Docker)</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">12</span> Adult Platform Search</td>
+        <td>onlyfinder</td>
+        <td>OnlyFans, Fansly, and 8+ other adult content platforms</td>
+      </tr>
+      <tr>
+        <td><span class="phase-badge">13</span> OSINT Framework</td>
+        <td>recon-ng</td>
+        <td>Modular correlation and reporting of all discovered data</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>SPOTLIGHT Flags Reference</h2>
+  <table class="flag-table">
+    <thead><tr><th>Flag</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>--quick</code></td><td>7-tool fast sweep: sherlock, blackbird, cupidcr4wl, holehe, socialscan, ignorant, toutatis</td></tr>
+      <tr><td><code>--dating</code></td><td>Dating/adult focus: cupidcr4wl, blackbird, maigret, toutatis, holehe, socialscan, onlyfinder, ignorant</td></tr>
+      <tr><td><code>--tools a,b,c</code></td><td>Override tool list — run only specified tools</td></tr>
+      <tr><td><code>--timeout N</code></td><td>Per-tool timeout (default: 120s full, 60s quick)</td></tr>
+      <tr><td><code>--session NAME</code></td><td>Track in a named investigation session</td></tr>
+      <tr><td><code>--case-id ID</code></td><td>Tag report with formal case identifier</td></tr>
+      <tr><td><code>--examiner NAME</code></td><td>Tag examiner name for documentation</td></tr>
+      <tr><td><code>--notes TEXT</code></td><td>Attach notes to the investigation</td></tr>
+      <tr><td><code>--score</code></td><td>Calculate exposure risk score (1–100)</td></tr>
+      <tr><td><code>--discover</code></td><td>Suggest complementary tools after scan</td></tr>
+      <tr><td><code>--raw</code></td><td>Show raw stdout from each tool</td></tr>
+      <tr><td><code>--no-color</code></td><td>Plain text output</td></tr>
+      <tr><td><code>--open</code></td><td>Auto-open HTML report in browser</td></tr>
+      <tr><td><code>--proxy URL</code></td><td>Route through proxy</td></tr>
+      <tr><td><code>--tor</code></td><td>Route through Tor (port 9050)</td></tr>
+      <tr><td><code>--jitter</code></td><td>Random delays between tool launches</td></tr>
+    </tbody>
+  </table>
+
+  <h2>SPOTLIGHT Examples</h2>
+  <pre><span class="cm"># Full relationship investigation (35+ tools)</span>
+spotlight johndoe
+
+<span class="cm"># Quick 7-tool sweep — under 2 minutes</span>
+spotlight johndoe --quick
+
+<span class="cm"># Dating platforms only</span>
+spotlight johndoe --dating
+
+<span class="cm"># Investigate by email address</span>
+spotlight johndoe@gmail.com
+
+<span class="cm"># Investigate by phone number</span>
+spotlight +15551234567
+
+<span class="cm"># Full investigation with JSON export</span>
+spotlight johndoe -o json --output-file case001.json
+
+<span class="cm"># HTML report auto-opened in browser</span>
+spotlight johndoe -o html --open
+
+<span class="cm"># Named session + formal case tracking</span>
+spotlight johndoe --session case001 --case-id CASE-2024-001 --examiner "Detective Smith"
+
+<span class="cm"># Maximum OpSec — Tor + jitter</span>
+spotlight johndoe --tor --jitter
+
+<span class="cm"># Exposure score + next-step suggestions</span>
+spotlight johndoe --score --discover
+
+<span class="cm"># Instagram deep OSINT only</span>
+spotlight johndoe --tools toutatis,osintgram,instaloader,instaloctrack
+
+<span class="cm"># Full investigation via recon templates</span>
+recon johndoe --template relationship
+recon johndoe --template spotlight-instagram
+recon target@gmail.com --template spotlight-email
+recon +15551234567 --template spotlight-phone
+recon johndoe --template dating-sweep</pre>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 10 — TOOL CATALOG
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 10</div>
+    <h1>Tool Catalog — All 68 Tools</h1>
+    <div class="chapter-desc">Every tool in Project RECON, organized by category with key examples. Run <code>recon learn &lt;tool&gt;</code> for 10+ examples per tool.</div>
+  </div>
+
+  <h2>Username Enumeration (7 Tools)</h2>
+
+  <div class="tool-card">
+    <div class="tool-card-name">wmn — WhatsMyName</div>
+    <div class="tool-card-desc">The core engine. Checks 4,387+ sites using precise match/no-match response analysis. Highest accuracy of any username tool.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Username</span><span class="badge badge-pip">pip install</span></div>
+    <pre style="margin-top:8px;">wmn johndoe                              <span class="cm"># Basic scan</span>
+wmn johndoe --nsfw                       <span class="cm"># Include adult sites</span>
+wmn johndoe --category dating,social     <span class="cm"># Filter by category</span>
+wmn johndoe --output html --workers 200  <span class="cm"># Fast scan + HTML report</span>
+wmn johndoe --tor --workers 10           <span class="cm"># Route through Tor</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">sherlock — Sherlock Project</div>
+    <div class="tool-card-desc">Username search across 400+ social networks. Excellent coverage of mainstream platforms. Different detection engine from WMN — run both for maximum coverage.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Username</span><span class="badge badge-pip">pip install sherlock-project</span></div>
+    <pre style="margin-top:8px;">sherlock johndoe                         <span class="cm"># Basic search</span>
+sherlock johndoe --output results.txt    <span class="cm"># Save to file</span>
+sherlock johndoe --proxy socks5://127.0.0.1:9050  <span class="cm"># Via Tor</span>
+sherlock johndoe --timeout 30 --print-found  <span class="cm"># Only show hits</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">maigret — Deep Username Search</div>
+    <div class="tool-card-desc">Searches ~3,000 sites and extracts profile data (bio, full name, linked accounts). Supports tag filtering — use <code>--tags dating</code> for relationship investigations.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Username</span><span class="badge badge-pip">pip install maigret</span></div>
+    <pre style="margin-top:8px;">maigret johndoe                          <span class="cm"># Full 3,000-site search</span>
+maigret johndoe --tags dating,finance    <span class="cm"># Dating sites only</span>
+maigret johndoe --html report.html       <span class="cm"># Interactive HTML report</span>
+maigret johndoe -a --no-progressbar      <span class="cm"># All sites, quiet mode</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">social-analyzer — 900+ Sites with Confidence Scoring</div>
+    <div class="tool-card-desc">Profile detection across 900+ sites using multiple analysis methods. Provides confidence scoring (good / maybe / bad) for each result.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Username</span><span class="badge badge-pip">pip install social-analyzer</span></div>
+    <pre style="margin-top:8px;">social-analyzer --username johndoe --mode fast
+social-analyzer --username johndoe --filter good --output json
+social-analyzer --username johndoe --method find,extract --output json</pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">socialscan — Email/Username Availability</div>
+    <div class="tool-card-desc">Accurate username and email availability checks on major platforms via API queries. Fastest tool for confirming account existence.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Username</span><span class="badge badge-pip">pip install socialscan</span></div>
+    <pre style="margin-top:8px;">socialscan johndoe                           <span class="cm"># Check username</span>
+socialscan johndoe@gmail.com                 <span class="cm"># Check email</span>
+socialscan user1 user2 user3 --json out.json <span class="cm"># Multiple targets</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">nexfil — NExfil OSINT</div>
+    <div class="tool-card-desc">Cross-platform username search with HTTP response code inspection. Good coverage of niche and international platforms.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Username</span><span class="badge badge-pip">pip install nexfil</span></div>
+    <pre style="margin-top:8px;">nexfil -u johndoe -l results.txt  <span class="cm"># Save to file</span>
+nexfil -u johndoe -H              <span class="cm"># Show HTTP response codes</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">blackbird — 600+ Sites (Dating Focus)</div>
+    <div class="tool-card-desc">Searches 600+ sites with emphasis on dating, adult content, and relationship platforms. Accepts both username and email. Critical for relationship investigations.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Username/Email</span><span class="badge badge-cat">Relationship</span></div>
+    <pre style="margin-top:8px;">blackbird --username johndoe --json
+blackbird --email johndoe@gmail.com
+blackbird --username johndoe --filter dating --json
+blackbird --username johndoe --pdf report.pdf</pre>
+  </div>
+
+  <h2>Email Intelligence (3 Tools)</h2>
+
+  <div class="tool-card">
+    <div class="tool-card-name">holehe — Service Registration Checker</div>
+    <div class="tool-card-desc">Checks 500+ services to see if an email address is registered. Uses "forgot password" flows — highly accurate with minimal false positives.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Email</span><span class="badge badge-pip">pip install holehe</span></div>
+    <pre style="margin-top:8px;">holehe target@gmail.com --only-used --no-color &gt; results.txt
+holehe target@gmail.com --rate-limit 1 --proxy http://127.0.0.1:8080</pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">h8mail — Breach Database Lookup</div>
+    <div class="tool-card-desc">Searches for emails in known data breaches. With API keys, retrieves leaked passwords and associated usernames from premium breach sources.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Email</span><span class="badge badge-pip">pip install h8mail</span></div>
+    <pre style="margin-top:8px;">h8mail -t target@gmail.com -o results.csv
+h8mail -t targets.txt -k config.ini --chase  <span class="cm"># Chase related emails</span>
+h8mail -t target@gmail.com --power-to-the-user  <span class="cm"># Free local breach data</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">theHarvester — Email, Host &amp; Subdomain Gathering</div>
+    <div class="tool-card-desc">Gathers emails, hosts, URLs, and subdomains from public sources (Google, Bing, DuckDuckGo, HackerTarget, etc.).</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Email/Domain</span><span class="badge badge-pip">pip install theHarvester</span></div>
+    <pre style="margin-top:8px;">theharvester -d example.com -b all -l 100 -f report
+theharvester -d johndoe -b duckduckgo,urlscan -l 50
+theharvester -d example.com -b all -l 500 --dns-resolve</pre>
+  </div>
+
+  <h2>Phone Intelligence (2 Tools)</h2>
+
+  <div class="tool-card">
+    <div class="tool-card-name">phoneinfoga — Phone Number OSINT</div>
+    <div class="tool-card-desc">Advanced phone number intelligence: carrier, country, line type (mobile/VOIP/landline), and Google dorking scanner.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Phone</span></div>
+    <pre style="margin-top:8px;">phoneinfoga scan -n +15551234567 --output json &gt; phone.json
+phoneinfoga scan -n +15551234567 --scanner googleSearchFootprint
+phoneinfoga scan -n +15551234567 --scanner local  <span class="cm"># Offline only</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">ignorant — Phone Platform Registration</div>
+    <div class="tool-card-desc">Checks whether a phone number is registered on WhatsApp, Telegram, Signal, Snapchat, and other messaging platforms.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Phone</span><span class="badge badge-pip">pip install ignorant</span></div>
+    <pre style="margin-top:8px;">ignorant +1 5551234567 --only-used --no-color &gt; ignorant_results.txt
+ignorant +44 7911123456 --timeout 20 --proxy http://127.0.0.1:8080</pre>
+  </div>
+
+  <h2>Network Forensics (5 Tools)</h2>
+
+  <div class="tool-card">
+    <div class="tool-card-name">nmap — Network Scanner</div>
+    <div class="tool-card-desc">The gold standard network scanner. Discovers hosts, ports, services, OS fingerprints, and vulnerabilities.</div>
+    <div><span class="badge badge-active">Active</span><span class="badge badge-cat">Network</span><span class="badge badge-brew">brew install nmap</span></div>
+    <pre style="margin-top:8px;">nmap -sV 192.168.1.1             <span class="cm"># Service/version detection</span>
+nmap -A -T4 target.com           <span class="cm"># Aggressive: OS + scripts + traceroute</span>
+nmap -p 1-65535 -T4 192.168.1.1  <span class="cm"># Full port scan</span>
+nmap --script vuln 192.168.1.1   <span class="cm"># Vulnerability scripts</span>
+nmap -sn 192.168.1.0/24          <span class="cm"># Ping sweep subnet</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">tshark — Command-Line Wireshark</div>
+    <div class="tool-card-desc">Capture and analyze network packets from the terminal. Full Wireshark dissector library available.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Network</span><span class="badge badge-brew">brew install wireshark</span></div>
+    <pre style="margin-top:8px;">tshark -i en0 -w output.pcap -a duration:60
+tshark -r capture.pcap -Y 'dns' -T fields -e dns.qry.name
+tshark -r capture.pcap -Y 'http.request' -T fields -e http.host -e http.request.uri</pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">tcpdump — Lightweight Packet Capture</div>
+    <div class="tool-card-desc">Quick and lightweight network sniffing. Save to pcap for Wireshark/tshark analysis.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Network</span></div>
+    <pre style="margin-top:8px;">sudo tcpdump -i en0 -w capture.pcap
+sudo tcpdump -i en0 port 53           <span class="cm"># DNS only</span>
+sudo tcpdump -i en0 host 192.168.1.1  <span class="cm"># Specific host</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">mitmproxy — HTTPS Traffic Interception</div>
+    <div class="tool-card-desc">Interactive HTTPS proxy. Intercept, inspect, modify, and replay web traffic. Essential for analyzing app communications.</div>
+    <div><span class="badge badge-active">Active</span><span class="badge badge-cat">Traffic</span><span class="badge badge-brew">brew install mitmproxy</span></div>
+    <pre style="margin-top:8px;">mitmproxy                  <span class="cm"># Interactive TUI on port 8080</span>
+mitmweb                    <span class="cm"># Web UI at http://localhost:8081</span>
+mitmdump -w traffic.flow   <span class="cm"># Dump all traffic to file</span>
+mitmdump -r traffic.flow --set hardump=output.har  <span class="cm"># Export to HAR</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">curl — HTTP Request Tool</div>
+    <div class="tool-card-desc">Transfer data to/from servers. Fingerprint web servers, test APIs, follow redirects, send cookies.</div>
+    <div><span class="badge badge-active">Active</span><span class="badge badge-cat">Web</span></div>
+    <pre style="margin-top:8px;">curl -I https://example.com                      <span class="cm"># Headers only (server fingerprint)</span>
+curl -L https://bit.ly/shortlink                  <span class="cm"># Follow redirects</span>
+curl -x socks5://127.0.0.1:9050 https://example  <span class="cm"># Via Tor</span>
+curl -w '%{http_code}' -o /dev/null -s https://example.com  <span class="cm"># Status code only</span></pre>
+  </div>
+
+  <h2>DNS &amp; Domain Intelligence (3 Tools)</h2>
+
+  <div class="tool-card">
+    <div class="tool-card-name">whois — Domain/IP Registration Data</div>
+    <div class="tool-card-desc">Query domain and IP registration data: owner, registrar, creation/expiry dates, nameservers, abuse contacts.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">DNS</span></div>
+    <pre style="margin-top:8px;">whois example.com | grep -i 'registrant\|created\|expires'
+whois 93.184.216.34  <span class="cm"># IP ownership</span>
+whois example.com &gt; whois_evidence.txt  <span class="cm"># Save for evidence</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">dig — DNS Lookup Utility</div>
+    <div class="tool-card-desc">Query any DNS record type. Authoritative responses, reverse lookups, zone transfer attempts.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">DNS</span></div>
+    <pre style="margin-top:8px;">dig example.com MX          <span class="cm"># Mail servers</span>
+dig example.com TXT          <span class="cm"># SPF/DKIM/verification</span>
+dig -x 93.184.216.34         <span class="cm"># Reverse lookup</span>
+dig axfr @ns1.example.com example.com  <span class="cm"># Zone transfer attempt</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">nslookup — Quick DNS Query</div>
+    <div class="tool-card-desc">Simple DNS query tool for quick lookups. Good for interactive use.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">DNS</span></div>
+    <pre style="margin-top:8px;">nslookup -type=mx example.com   <span class="cm"># Mail exchange records</span>
+nslookup -type=txt example.com  <span class="cm"># TXT records</span>
+nslookup -debug example.com     <span class="cm"># Debug mode</span></pre>
+  </div>
+
+  <h2>Metadata &amp; File Analysis (5 Tools)</h2>
+
+  <div class="tool-card">
+    <div class="tool-card-name">exiftool — Metadata Extraction &amp; Removal</div>
+    <div class="tool-card-desc">Read, write, and strip metadata from images, documents, videos, and 100+ file formats. GPS coordinates in photos are one of the most valuable evidence sources in investigations.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Metadata</span><span class="badge badge-brew">brew install exiftool</span></div>
+    <pre style="margin-top:8px;">exiftool photo.jpg                                    <span class="cm"># All metadata</span>
+exiftool -gps* photo.jpg                              <span class="cm"># GPS coordinates only</span>
+exiftool -DateTimeOriginal -GPSLatitude -GPSLongitude photo.jpg
+exiftool -csv -r /path/to/photos/ &gt; metadata.csv     <span class="cm"># Bulk CSV export</span>
+exiftool -all= photo.jpg                              <span class="cm"># STRIP all metadata</span>
+exiftool -json photo.jpg &gt; photo_meta.json</pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">strings — Extract Hidden Text from Binaries</div>
+    <div class="tool-card-desc">Extract all printable character sequences from binary files. Find embedded URLs, credentials, IPs, and emails in executables, images, and documents.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Metadata</span></div>
+    <pre style="margin-top:8px;">strings -n 10 firmware.bin                           <span class="cm"># Strings ≥10 chars</span>
+strings malware.bin | grep -i 'http\|password\|key'  <span class="cm"># Find secrets</span>
+strings binary.bin | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'  <span class="cm"># IPs</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">file — File Type Identification</div>
+    <div class="tool-card-desc">Identify the true file type using magic bytes — never trust file extensions. Essential first step in any file forensics workflow.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Metadata</span></div>
+    <pre style="margin-top:8px;">file suspicious_doc.pdf    <span class="cm"># Is this actually a PDF?</span>
+file *                     <span class="cm"># Identify all files in directory</span>
+file -i document.docx      <span class="cm"># MIME type</span>
+file suspicious.jpg | grep -v JPEG  <span class="cm"># Alert if not really a JPEG</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">xxd — Hex Dump Utility</div>
+    <div class="tool-card-desc">Inspect raw bytes of any file. Essential for forensic byte-level analysis and binary patching.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Metadata</span></div>
+    <pre style="margin-top:8px;">xxd -l 256 file.dat                        <span class="cm"># First 256 bytes</span>
+xxd file.bin | grep -E 'ffd8ffe|89504e47'  <span class="cm"># JPEG/PNG magic bytes</span>
+xxd -r modified.hex &gt; output.bin           <span class="cm"># Reverse: hex to binary</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">hexdump — Hex Display Tool</div>
+    <div class="tool-card-desc">Display file contents in hex, decimal, octal, or ASCII with customizable formatting.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Metadata</span></div>
+    <pre style="margin-top:8px;">hexdump -C file.bin | head -30              <span class="cm"># Canonical hex+ASCII</span>
+hexdump -C -s 512 -n 64 disk.img          <span class="cm"># Boot sector inspection</span>
+hexdump -C suspicious.bin | tail -30      <span class="cm"># Check for appended data</span></pre>
+  </div>
+
+  <h2>Steganography (1 Tool)</h2>
+
+  <div class="tool-card">
+    <div class="tool-card-name">steghide — Steganography Detection &amp; Extraction</div>
+    <div class="tool-card-desc">Embed and extract hidden data in JPEG, BMP, WAV, and AU files. Detect hidden messages in images sent between individuals.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Steganography</span><span class="badge badge-brew">brew install steghide</span></div>
+    <pre style="margin-top:8px;">steghide info photo.jpg                    <span class="cm"># Check for embedded data</span>
+steghide extract -sf secret.jpg -p ''     <span class="cm"># Extract (empty password)</span>
+steghide extract -sf audio.wav -xf out.txt</pre>
+  </div>
+
+  <h2>Password Recovery (1 Tool)</h2>
+
+  <div class="tool-card">
+    <div class="tool-card-name">john — John the Ripper (Password Cracker)</div>
+    <div class="tool-card-desc">Offline password cracker supporting 200+ hash types. Used in evidence recovery when encrypted files or hashed passwords are part of a case.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Crypto</span><span class="badge badge-brew">brew install john</span></div>
+    <pre style="margin-top:8px;">john --wordlist=rockyou.txt hashes.txt   <span class="cm"># Dictionary attack</span>
+john --show hashes.txt                   <span class="cm"># Show cracked passwords</span>
+zip2john protected.zip &gt; zip_hash.txt &amp;&amp; john zip_hash.txt
+pdf2john doc.pdf &gt; pdf_hash.txt &amp;&amp; john --wordlist=rockyou.txt pdf_hash.txt</pre>
+  </div>
+
+  <h2>Digital Forensics &amp; Recovery (2 Tools)</h2>
+
+  <div class="tool-card">
+    <div class="tool-card-name">testdisk / photorec — Disk Recovery</div>
+    <div class="tool-card-desc">Recover lost partitions, undelete files, and carve data from disk images. PhotoRec (bundled) recovers 480+ file types by signature.</div>
+    <div><span class="badge badge-active">Active</span><span class="badge badge-cat">Forensics</span><span class="badge badge-brew">brew install testdisk</span></div>
+    <pre style="margin-top:8px;">testdisk disk_image.dd              <span class="cm"># Analyze disk image</span>
+photorec disk.img                   <span class="cm"># Recover deleted files</span>
+testdisk /list                      <span class="cm"># Detect drives</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">4n6notebooks — iOS Forensic Jupyter Notebooks</div>
+    <div class="tool-card-desc">Bundled Jupyter notebook suite for iOS forensics: SQLCipher database decryption, Signal message parsing, ProtonMail recovery, WhatsApp/Telegram parsing, unified timeline building.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">iOS Forensics</span></div>
+    <pre style="margin-top:8px;">4n6notebooks launch            <span class="cm"># Full JupyterLab environment</span>
+4n6notebooks launch signal     <span class="cm"># iOS Signal parsing</span>
+4n6notebooks launch whatsapp   <span class="cm"># WhatsApp database parser</span>
+4n6notebooks launch timeline   <span class="cm"># Unified timeline builder</span>
+4n6notebooks export signal --format pdf  <span class="cm"># Court-ready PDF export</span></pre>
+  </div>
+
+  <h2>Relationship Investigation (3 Tools)</h2>
+
+  <div class="tool-card">
+    <div class="tool-card-name">cupidcr4wl — Adult Content &amp; Dating Platform Crawler</div>
+    <div class="tool-card-desc">Dedicated crawler for adult content and dating platforms. Accepts username or phone number. Critical for relationship investigations.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Relationship</span></div>
+    <pre style="margin-top:8px;">cupidcr4wl -u johndoe -o results.json --verbose
+cupidcr4wl -p +15551234567 -o phone_report.json
+cupidcr4wl -u johndoe --category hookup --proxy http://127.0.0.1:8080</pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">toutatis — Instagram OSINT</div>
+    <div class="tool-card-desc">Extracts hidden emails and phone numbers from Instagram accounts using an authenticated session. Often reveals contact details the account holder considers private.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Relationship</span><span class="badge badge-pip">pip install toutatis</span></div>
+    <pre style="margin-top:8px;">toutatis -u johndoe -s SESSION_ID -j &gt; ig_data.json
+toutatis -u johndoe -s SESSION_ID | grep -i phone
+for user in $(cat ig_users.txt); do toutatis -u $user -s SESSION_ID -j; done</pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">compreface — Face Recognition (Docker)</div>
+    <div class="tool-card-desc">Self-hosted face recognition via Docker REST API. Detect, recognize, and verify faces across discovered photos. Requires Docker Desktop.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Face Recognition</span></div>
+    <pre style="margin-top:8px;">compreface start                               <span class="cm"># Start Docker containers</span>
+compreface detect photo.jpg                    <span class="cm"># Detect faces</span>
+compreface recognize suspect.jpg               <span class="cm"># Match against known subjects</span>
+compreface verify face1.jpg face2.jpg         <span class="cm"># Compare two faces</span>
+compreface add-subject --name 'John Doe' --image ref.jpg</pre>
+  </div>
+
+  <h2>System Inspection (4 Tools)</h2>
+
+  <div class="tool-card">
+    <div class="tool-card-name">lsof — List Open Files &amp; Sockets</div>
+    <div class="tool-card-desc">See what files, sockets, and network connections every process has open. Identify suspicious processes and their network activity.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Sysinfo</span></div>
+    <pre style="margin-top:8px;">lsof -i -P -n                    <span class="cm"># All network connections</span>
+lsof -i :8080                    <span class="cm"># What's using port 8080?</span>
+lsof -i TCP:443 -s TCP:ESTABLISHED
+lsof -i @8.8.8.8                 <span class="cm"># Connections to specific IP</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">netstat — Network Connections &amp; Routing</div>
+    <div class="tool-card-desc">Display network connections, routing tables, and interface statistics. Quick overview of all listening ports and active connections.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Sysinfo</span></div>
+    <pre style="margin-top:8px;">netstat -an | grep LISTEN         <span class="cm"># All listening ports</span>
+netstat -an | grep ESTABLISHED    <span class="cm"># Active connections</span>
+netstat -rn | grep default        <span class="cm"># Default gateway</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">dtrace — Dynamic System Tracing</div>
+    <div class="tool-card-desc">Trace system calls, I/O, and kernel events in real-time. Monitor processes, detect hidden activity, profile CPU usage.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Sysinfo</span></div>
+    <pre style="margin-top:8px;">sudo dtrace -n 'syscall:::entry { @[execname] = count(); }'
+sudo dtrace -n 'proc:::exec-success { trace(curpsinfo-&gt;pr_psargs); }'
+sudo dtruss -p 12345              <span class="cm"># Trace syscalls of a process</span></pre>
+  </div>
+
+  <div class="tool-card">
+    <div class="tool-card-name">lldb — LLVM Debugger</div>
+    <div class="tool-card-desc">Debug programs and inspect memory. Attach to running processes, set breakpoints, read registers and memory.</div>
+    <div><span class="badge badge-passive">Passive</span><span class="badge badge-cat">Reverse Engineering</span></div>
+    <pre style="margin-top:8px;">lldb ./program              <span class="cm"># Debug a program</span>
+lldb -p 12345               <span class="cm"># Attach to running process</span>
+(lldb) bt                   <span class="cm"># Full backtrace</span>
+(lldb) image list           <span class="cm"># Loaded libraries and base addresses</span></pre>
+  </div>
+
+  <h2>Networking Utilities (6 Tools)</h2>
+  <p>nc (Netcat), ncat (SSL netcat), traceroute, ping, wget, objdump — all pre-installed on macOS or available via Homebrew. Run <code>recon learn &lt;tool&gt;</code> for 10+ examples on each.</p>
+
+  <h2>iOS Forensics (2 Tools)</h2>
+  <div class="tool-card">
+    <div class="tool-card-name">keychain-decrypt — iOS Keychain Decrypter</div>
+    <div class="tool-card-desc">Decrypt saved passwords, WiFi credentials, app authentication tokens, and certificates from jailbroken iOS devices. Requires jailbroken device + Xcode.</div>
+    <div><span class="badge badge-active">Active</span><span class="badge badge-cat">iOS Forensics</span></div>
+    <pre style="margin-top:8px;">keychain-decrypt build-agent      <span class="cm"># Compile on-device agent</span>
+keychain-decrypt upload-agent     <span class="cm"># Deploy to jailbroken device</span>
+keychain-decrypt decrypt          <span class="cm"># Full decryption workflow</span>
+keychain-decrypt filter --type wifi       <span class="cm"># WiFi passwords only</span>
+keychain-decrypt export --format csv &gt; keychain_items.csv</pre>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 11 — SESSIONS
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 11</div>
+    <h1>Session Tracking</h1>
+    <div class="chapter-desc">Track multi-run investigations, resume where you left off, and maintain finding history over time.</div>
+  </div>
+
+  <h2>What Sessions Do</h2>
+  <p>A session is a persistent investigation record stored as a JSON file in <code>~/.recon/sessions/&lt;name&gt;.json</code>. Sessions allow you to:</p>
+  <ul>
+    <li>Resume an investigation across multiple work sessions</li>
+    <li>Aggregate findings from multiple targets under one case</li>
+    <li>Compare findings over time (run on Monday vs. run on Friday)</li>
+    <li>Tag findings with case ID, examiner name, and notes</li>
+    <li>Include the session in evidence bag outputs</li>
+  </ul>
+
+  <h2>Creating and Using Sessions</h2>
+  <pre><span class="cm"># Start a new session</span>
+recon johndoe --session investigation_001 --examiner "Agent Smith" --case-id CASE-2024-001
+
+<span class="cm"># Add notes to a session</span>
+recon johndoe --session investigation_001 --notes "Second scan after target changed username"
+
+<span class="cm"># Run a different target in the same session</span>
+recon johndoe@gmail.com --session investigation_001
+
+<span class="cm"># Resume a session (re-runs same targets, appends new findings)</span>
+recon --session investigation_001
+
+<span class="cm"># Compare current scan against a previous JSON export</span>
+recon johndoe --diff previous_scan.json</pre>
+
+  <h2>Session JSON Structure</h2>
+  <div class="evidence-box">
+    <h4>~/.recon/sessions/investigation_001.json</h4>
+    <pre style="background:transparent;border:none;padding:0;color:#aaa;font-size:8pt;">{
+  "session_id": "investigation_001",
+  "case_id": "CASE-2024-001",
+  "examiner": "Agent Smith",
+  "created": "2024-01-15T09:00:00+00:00",
+  "last_updated": "2024-01-15T14:30:00+00:00",
+  "targets": ["johndoe", "johndoe@gmail.com"],
+  "notes": ["Initial recon", "Second scan after username change"],
+  "runs": [
+    {
+      "timestamp": "2024-01-15T09:00:00+00:00",
+      "target": "johndoe",
+      "tools_run": ["wmn", "sherlock", "maigret"],
+      "findings_count": 47
+    }
+  ],
+  "all_findings": [...],
+  "unique_tools_used": ["wmn", "sherlock", "maigret", "holehe"]
+}</pre>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 12 — CHAIN OF CUSTODY
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 12</div>
+    <h1>Chain of Custody &amp; Evidence Bags</h1>
+    <div class="chapter-desc">Forensically sound evidence collection that can withstand legal scrutiny.</div>
+  </div>
+
+  <h2>How It Works</h2>
+  <p>When you add <code>--evidence-bag ./evidence/ --chain-of-custody</code> to any scan, RECON creates a forensically structured directory containing:</p>
+
+  <div class="evidence-box">
+    <h4>📁 Evidence Bag Directory Structure</h4>
+    <pre style="background:transparent;border:none;padding:0;color:#aaa;font-size:8pt;">./evidence/
+├── MANIFEST.json            ← SHA-256 hashes of ALL artifacts
+├── CHAIN_OF_CUSTODY.json    ← Timestamped action log
+├── reports/
+│   ├── scan_report.json     ← Full unified scan report
+│   └── scan_report.md       ← Markdown version
+├── raw_output/
+│   ├── wmn_stdout.txt       ← Raw tool output
+│   ├── sherlock_stdout.txt
+│   ├── holehe_stdout.txt
+│   └── ...one file per tool
+└── CHAIN_OF_CUSTODY.txt     ← Human-readable summary</pre>
+  </div>
+
+  <h2>Running with Evidence Bag</h2>
+  <pre><span class="cm"># Basic evidence bag</span>
+recon johndoe --evidence-bag ./case001/ --chain-of-custody
+
+<span class="cm"># Full forensic mode</span>
+recon johndoe \
+  --evidence-bag ./case001/ \
+  --chain-of-custody \
+  --hash-verify \
+  --save-raw ./case001/raw/ \
+  --examiner "Det. Jane Smith" \
+  --case-id CASE-2024-042 \
+  -o json
+
+<span class="cm"># SPOTLIGHT with evidence bag</span>
+spotlight johndoe \
+  --evidence-bag ./spotlight_evidence/ \
+  --session case001 \
+  --examiner "Investigator Jones"</pre>
+
+  <h2>MANIFEST.json</h2>
+  <p>The manifest records every file in the evidence bag with its SHA-256 hash, size, timestamp, and originating tool:</p>
+  <div class="evidence-box">
+    <h4>MANIFEST.json</h4>
+    <pre style="background:transparent;border:none;padding:0;color:#aaa;font-size:8pt;">{
+  "case_id": "CASE-2024-042",
+  "examiner": "Det. Jane Smith",
+  "created": "2024-01-15T09:00:00+00:00",
+  "finalized": "2024-01-15T09:47:23+00:00",
+  "artifacts": [
+    {
+      "filename": "scan_report.json",
+      "path": "reports/scan_report.json",
+      "type": "reports",
+      "tool": "recon",
+      "sha256": "a3f2d4e1c9b8...",
+      "size_bytes": 48291,
+      "timestamp": "2024-01-15T09:47:22+00:00"
+    },
+    ...
+  ]
+}</pre>
+  </div>
+
+  <h2>CHAIN_OF_CUSTODY.json</h2>
+  <p>Records every action taken during the investigation with UTC timestamps:</p>
+  <div class="evidence-box">
+    <h4>CHAIN_OF_CUSTODY.json (excerpt)</h4>
+    <pre style="background:transparent;border:none;padding:0;color:#aaa;font-size:8pt;">{
+  "case_id": "CASE-2024-042",
+  "examiner": "Det. Jane Smith",
+  "manifest_sha256": "c7a9b3f1...",
+  "entries": [
+    {"timestamp": "2024-01-15T09:00:00Z", "action": "evidence_bag_created", ...},
+    {"timestamp": "2024-01-15T09:01:15Z", "action": "artifact_stored", "details": {"filename": "wmn_stdout.txt", "sha256": "..."}},
+    {"timestamp": "2024-01-15T09:47:22Z", "action": "integrity_check", "details": {"total_files": 18, "failures": 0}},
+    {"timestamp": "2024-01-15T09:47:23Z", "action": "evidence_bag_finalized", ...}
+  ]
+}</pre>
+  </div>
+
+  <h2>Verifying Integrity</h2>
+  <pre><span class="cm"># Verify all hashes match — run this before presenting evidence</span>
+recon johndoe --hash-verify --evidence-bag ./case001/
+
+<span class="cm"># Manual verification with sha256sum</span>
+sha256sum -c &lt;(python3 -c "
+import json
+m = json.load(open('./case001/MANIFEST.json'))
+for a in m['artifacts']:
+    print(f\"{a['sha256']}  ./case001/{a['path']}\")
+")</pre>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">✅</div>
+    <div class="callout-body">
+      <div class="callout-title">Court Admissibility</div>
+      The evidence bag system is designed to meet digital forensics best practices: every artifact is SHA-256 hashed at creation, the chain of custody records every action with UTC timestamps, and the manifest is itself hashed and recorded. This creates a verifiable, tamper-evident record suitable for presentation as digital evidence in legal proceedings.
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 13 — OPSEC
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 13</div>
+    <h1>OpSec &amp; Anonymity</h1>
+    <div class="chapter-desc">Protecting your investigation identity and avoiding detection.</div>
+  </div>
+
+  <div class="callout callout-warning">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body">
+      <div class="callout-title">Understand Active vs. Passive</div>
+      <strong>Passive tools</strong> (flagged <code>passive=True</code> in the catalog) check public records or use indirect methods — they do not directly contact the target. <strong>Active tools</strong> make direct requests that may be logged by the target's server. Always use <code>--passive</code> mode when you need to avoid leaving traces.
+    </div>
+  </div>
+
+  <h2>VPN Check</h2>
+  <pre><span class="cm"># Refuse to run if no VPN is detected</span>
+recon johndoe --vpn-check
+
+<span class="cm"># RECON detects VPN by checking for these network interfaces:</span>
+<span class="cm"># utun0, utun1, utun2 (macOS built-in VPN)</span>
+<span class="cm"># tun0 (OpenVPN)</span>
+<span class="cm"># wg0, wg1 (WireGuard)</span></pre>
+
+  <h2>Tor Routing</h2>
+  <pre><span class="cm"># Start Tor first</span>
+brew install tor
+tor &amp;
+
+<span class="cm"># Route all tool requests through Tor</span>
+recon johndoe --tor
+
+<span class="cm"># Tor + slow-down for realism</span>
+recon johndoe --tor --jitter --parallel 3 --retries 2</pre>
+
+  <h2>Proxy Routing</h2>
+  <pre><span class="cm"># HTTP proxy (Burp Suite, mitmproxy)</span>
+recon johndoe --proxy http://127.0.0.1:8080
+
+<span class="cm"># SOCKS5 proxy</span>
+recon johndoe --proxy socks5://127.0.0.1:1080
+
+<span class="cm"># SPOTLIGHT with proxy</span>
+spotlight johndoe --proxy socks5://127.0.0.1:9050</pre>
+
+  <h2>OpSec Check — Pre-Scan Warning</h2>
+  <pre><span class="cm"># Warn before running any active (trace-leaving) tools</span>
+recon johndoe --opsec-check</pre>
+  <p>RECON will display a list of active tools in the scan and prompt you to confirm before proceeding. Passive tools are identified in the catalog by <code>passive=True</code> and are safe to run without disclosure risk.</p>
+
+  <h2>Rate Limiting &amp; Jitter</h2>
+  <pre><span class="cm"># Max 5 requests per second across all tools</span>
+recon johndoe --rate-limit 5
+
+<span class="cm"># Random delay between tool launches (0.5–3 seconds)</span>
+recon johndoe --jitter
+
+<span class="cm"># Combined — hardest to detect pattern</span>
+recon johndoe --passive --jitter --rate-limit 2 --parallel 3</pre>
+
+  <h2>Passive-Only Mode</h2>
+  <pre><span class="cm"># Run only tools that don't directly contact the target</span>
+recon johndoe --passive
+
+<span class="cm"># Or use the passive-only template</span>
+recon johndoe --template passive-only</pre>
+
+  <table>
+    <thead><tr><th>Technique</th><th>Flag</th><th>Protection Level</th></tr></thead>
+    <tbody>
+      <tr><td>Passive tools only</td><td><code>--passive</code></td><td>High — no direct target contact</td></tr>
+      <tr><td>Tor routing</td><td><code>--tor</code></td><td>High — hides investigator IP</td></tr>
+      <tr><td>VPN required</td><td><code>--vpn-check</code></td><td>Medium — masks real IP</td></tr>
+      <tr><td>Jitter delays</td><td><code>--jitter</code></td><td>Medium — disguises automated patterns</td></tr>
+      <tr><td>Rate limiting</td><td><code>--rate-limit N</code></td><td>Medium — avoids triggering rate limits</td></tr>
+      <tr><td>Parallel limit</td><td><code>--parallel N</code></td><td>Low-Medium — reduces burst traffic</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 14 — REPORT EXPORT
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 14</div>
+    <h1>Report Export</h1>
+    <div class="chapter-desc">All output formats available in Project RECON.</div>
+  </div>
+
+  <table>
+    <thead><tr><th>Format</th><th>Flag</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>JSON</td><td><code>-o json</code></td><td>Machine-readable structured output. Full findings, tool details, timestamps.</td></tr>
+      <tr><td>CSV</td><td><code>-o csv</code></td><td>Spreadsheet-compatible. Columns: site, url, status, category, tool, response_time.</td></tr>
+      <tr><td>HTML</td><td><code>-o html</code></td><td>Self-contained dark-themed report with clickable links and category grouping. Best for sharing.</td></tr>
+      <tr><td>PDF</td><td><code>--pdf</code></td><td>PDF version of the HTML report via weasyprint/wkhtmltopdf.</td></tr>
+      <tr><td>Markdown</td><td><code>--markdown</code></td><td>Markdown export for inclusion in reports or wikis.</td></tr>
+    </tbody>
+  </table>
+
+  <pre><span class="cm"># HTML report opened in browser</span>
+recon johndoe -o html --open
+
+<span class="cm"># JSON to specific path</span>
+recon johndoe -o json --output-file /path/to/case/report.json
+
+<span class="cm"># Multiple formats in one run</span>
+recon johndoe -o json --markdown --pdf
+
+<span class="cm"># Save raw tool output alongside report</span>
+recon johndoe -o json --save-raw ./raw_output/
+
+<span class="cm"># For scripting — no banner, no color, JSON output</span>
+recon johndoe -o json --no-banner --no-color | jq '.findings[].url'</pre>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 15 — AUTO-UPDATE
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 15</div>
+    <h1>Auto-Update System</h1>
+    <div class="chapter-desc">Keeping all tools and site databases current.</div>
+  </div>
+
+  <h2>Manual Updates</h2>
+  <pre>recon update              <span class="cm"># Update everything</span>
+recon update --pip        <span class="cm"># Only Python pip packages</span>
+recon update --brew       <span class="cm"># Only Homebrew packages</span>
+recon update --bundled    <span class="cm"># Only git-cloned bundled tools</span></pre>
+
+  <h2>Automatic Updates</h2>
+  <p>The installer sets up a <strong>launchd job</strong> that runs every Monday at 3:00 AM and silently updates all tools. Logs are written to <code>~/.recon/logs/update.log</code>.</p>
+
+  <pre><span class="cm"># Check auto-update status</span>
+launchctl list | grep recon
+
+<span class="cm"># Disable auto-updates</span>
+launchctl unload ~/Library/LaunchAgents/dev.recon.autoupdate.plist
+
+<span class="cm"># Re-enable auto-updates</span>
+launchctl load ~/Library/LaunchAgents/dev.recon.autoupdate.plist
+
+<span class="cm"># View last update log</span>
+cat ~/.recon/logs/update.log | tail -50</pre>
+
+  <h2>What Gets Updated</h2>
+  <table>
+    <thead><tr><th>Component</th><th>Update Method</th><th>Frequency (Auto)</th></tr></thead>
+    <tbody>
+      <tr><td>WMN site database</td><td>Fetched from GitHub</td><td>Weekly</td></tr>
+      <tr><td>Sherlock/Maigret site data</td><td><code>wmn --update</code></td><td>Weekly</td></tr>
+      <tr><td>Python tools (pip)</td><td><code>pip install --upgrade</code></td><td>Weekly</td></tr>
+      <tr><td>Homebrew tools</td><td><code>brew upgrade</code></td><td>Weekly</td></tr>
+      <tr><td>Bundled tools (git)</td><td><code>git pull</code> in each tool dir</td><td>Weekly</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 16 — PLUGINS
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 16</div>
+    <h1>Plugin System &amp; Marketplace</h1>
+    <div class="chapter-desc">Extend RECON with custom tools or browse the community marketplace.</div>
+  </div>
+
+  <h2>Writing a Plugin</h2>
+  <p>Create a <code>.py</code> file in <code>~/.recon/plugins/</code>. RECON loads all plugins automatically on next startup:</p>
+  <pre><span class="cm"># ~/.recon/plugins/my_scanner.py</span>
+RECON_TOOLS = [
+    {
+        "name": "my-scanner",
+        "command": "my-scanner",
+        "description": "My custom scanning tool",
+        "input_types": ["username", "email"],
+        "args_template": ["{target}"],
+        "passive": True,
+        "install_hint": "pip install my-scanner",
+    }
+]</pre>
+
+  <h2>Plugin Scaffolding</h2>
+  <pre>recon plugins create my-scanner   <span class="cm"># Creates boilerplate plugin file</span>
+recon plugins validate my.py      <span class="cm"># Validates format and required fields</span>
+recon plugins submit my.py        <span class="cm"># Submit to marketplace via GitHub Issue</span></pre>
+
+  <h2>Marketplace Commands</h2>
+  <pre>recon plugins                          <span class="cm"># List installed plugins</span>
+recon plugins search                   <span class="cm"># Browse all available plugins</span>
+recon plugins search "phone"           <span class="cm"># Search by keyword</span>
+recon plugins install social-deep-dive <span class="cm"># Install free plugin</span>
+recon plugins install premium-tool --key RECON-PREM-abc123  <span class="cm"># Install paid</span>
+recon plugins uninstall my-plugin      <span class="cm"># Remove plugin</span></pre>
+
+  <div class="callout callout-info">
+    <div class="callout-icon">💰</div>
+    <div class="callout-body">
+      <div class="callout-title">Plugin Revenue Share</div>
+      The marketplace supports free and paid plugins. Paid plugin authors receive a <strong>70/30 revenue split</strong> — 70% to the developer. Submit your plugin, set a price, and earn money on every install.
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 17 — TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 17</div>
+    <h1>Troubleshooting</h1>
+    <div class="chapter-desc">Solutions to the most common problems.</div>
+  </div>
+
+  <h2>Command Not Found</h2>
+  <div class="callout callout-warning">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body">
+      <div class="callout-title">"recon: command not found"</div>
+      <p>The <code>recon</code> command is not in your PATH. Solutions:</p>
+      <ol>
+        <li>Re-run the installer: <code>bash ~/RECON_WorkBench/install.sh</code></li>
+        <li>Activate the virtual environment: <code>source ~/RECON_WorkBench/.venv/bin/activate</code></li>
+        <li>Run directly: <code>python3 -m whatsmyname johndoe</code></li>
+        <li>Add to PATH manually: <code>export PATH="$HOME/.local/bin:$PATH"</code></li>
+      </ol>
+    </div>
+  </div>
+
+  <h2>Tool Not Found / Skipped</h2>
+  <p>If a tool is skipped during a scan, it is not installed. Check with:</p>
+  <pre>recon inventory            <span class="cm"># See all tools and install status</span>
+recon learn sherlock       <span class="cm"># Shows install command for the tool</span></pre>
+  <p>Install the missing tool with the command shown in <code>recon learn &lt;tool&gt;</code> or <code>recon inventory</code>.</p>
+
+  <h2>Scan Is Very Slow</h2>
+  <ul>
+    <li>Use <code>--quick</code> for a fast scan (top 3 tools, ~60 seconds)</li>
+    <li>Reduce timeout: <code>--timeout 8</code></li>
+    <li>Skip email expansion: <code>--no-email-expand</code></li>
+    <li>Run Tor with fewer parallel workers: <code>--tor --parallel 3 --timeout 30</code></li>
+  </ul>
+
+  <h2>Many Timeouts or Errors</h2>
+  <ul>
+    <li>Increase timeout: <code>--timeout 60</code></li>
+    <li>Add retries: <code>--retries 3</code></li>
+    <li>Some sites block automated requests — this is expected behavior</li>
+    <li>Add <code>--raw</code> flag to see which tools are failing and why</li>
+  </ul>
+
+  <h2>Tor Connection Refused</h2>
+  <ul>
+    <li>Ensure Tor is running: <code>tor &amp;</code> or via Tor Browser</li>
+    <li>Default port is 9050 (not 9150 from Tor Browser)</li>
+    <li>Install required library: <code>pip install aiohttp-socks</code></li>
+    <li>Test Tor: <code>curl -x socks5://127.0.0.1:9050 https://check.torproject.org</code></li>
+  </ul>
+
+  <h2>No Results / Zero Findings</h2>
+  <ul>
+    <li>Run <code>recon update</code> to fetch the latest site database</li>
+    <li>Check the username spelling — RECON searches exact-match by default</li>
+    <li>Try <code>--deep</code> for longer timeouts on slow-responding sites</li>
+    <li>Run <code>recon --list-tools</code> to confirm tools are installed</li>
+    <li>Try <code>--nsfw</code> if the subject may use adult platforms</li>
+  </ul>
+
+  <h2>CompreFace (Face Recognition) Not Starting</h2>
+  <ul>
+    <li>Ensure Docker Desktop is installed and running</li>
+    <li>Run <code>compreface start</code> and wait ~60 seconds for containers to initialize</li>
+    <li>Check status: <code>compreface status</code></li>
+    <li>Docker must have at least 2 GB RAM allocated</li>
+  </ul>
+
+  <h2>SSL Errors</h2>
+  <ul>
+    <li>RECON disables strict SSL verification by default for self-signed certificates</li>
+    <li>If errors persist, try routing through a local proxy: <code>--proxy http://127.0.0.1:8080</code></li>
+  </ul>
+
+  <h2>Evidence Bag Hash Verification Failure</h2>
+  <p>If <code>--hash-verify</code> reports mismatches, it means files in the evidence bag were modified after collection. This is a <strong>critical finding</strong> — the integrity of that evidence is compromised. Never modify files inside an evidence bag directory. Always work with copies.</p>
+
+  <h2>Getting Help</h2>
+  <pre>recon --help                     <span class="cm"># Full help text</span>
+spotlight --help                 <span class="cm"># SPOTLIGHT help</span>
+recon learn &lt;tool&gt;              <span class="cm"># Tool-specific guide</span>
+recon explain "term"             <span class="cm"># Explain a forensics concept</span>
+recon inventory                  <span class="cm"># Full system diagnostic</span></pre>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CHAPTER 18 — GLOSSARY
+═══════════════════════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="chapter-header">
+    <div class="chapter-num">Chapter 18</div>
+    <h1>Forensics Glossary</h1>
+    <div class="chapter-desc">Key terms used throughout Project RECON and digital forensics investigations.</div>
+  </div>
+
+  <table>
+    <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>OSINT</strong></td>
+        <td>Open Source Intelligence — intelligence collected from publicly available sources including social media, websites, public records, and published data.</td>
+      </tr>
+      <tr>
+        <td><strong>Chain of Custody</strong></td>
+        <td>A chronological documentation proving the seizure, custody, control, transfer, analysis, and disposition of evidence. Each action is timestamped and logged. Breaks in chain of custody can make evidence inadmissible.</td>
+      </tr>
+      <tr>
+        <td><strong>SHA-256</strong></td>
+        <td>Secure Hash Algorithm 256-bit — a cryptographic hash function that produces a unique 64-character fingerprint of any file. If even one byte changes, the hash changes completely. Used to verify evidence has not been tampered with.</td>
+      </tr>
+      <tr>
+        <td><strong>Evidence Bag</strong></td>
+        <td>In digital forensics, a container (directory) that stores all collected artifacts alongside their hash values and collection metadata. Project RECON's EvidenceBag creates MANIFEST.json + CHAIN_OF_CUSTODY.json automatically.</td>
+      </tr>
+      <tr>
+        <td><strong>Passive Reconnaissance</strong></td>
+        <td>Gathering information without directly interacting with the target system or person. Examples: WHOIS lookups, DNS queries, social media searches. Leaves no trace on the target's systems.</td>
+      </tr>
+      <tr>
+        <td><strong>Active Reconnaissance</strong></td>
+        <td>Gathering information by directly interacting with the target. Examples: port scanning, making HTTP requests to target's servers. May leave logs on the target's systems.</td>
+      </tr>
+      <tr>
+        <td><strong>Exposure Score</strong></td>
+        <td>A calculated 1–100 risk rating reflecting how much digital footprint a target has. Higher scores indicate more publicly discoverable information. Calculated by RECON using finding counts across categories.</td>
+      </tr>
+      <tr>
+        <td><strong>Enrichment</strong></td>
+        <td>The process of enhancing raw findings with additional context — resolving IPs, performing reverse DNS lookups, adding geolocation data. Run with <code>--enrich</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Correlation</strong></td>
+        <td>Identifying relationships between findings from multiple tools — e.g., the same URL appearing in both WMN and Sherlock results. Run with <code>--correlate</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Jitter</strong></td>
+        <td>Random time delays between automated requests. Mimics human behavior and avoids triggering rate-limit detection. Enabled with <code>--jitter</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Steganography</strong></td>
+        <td>The practice of hiding secret information within ordinary, non-secret data — most commonly hiding text or files inside image files.</td>
+      </tr>
+      <tr>
+        <td><strong>EXIF</strong></td>
+        <td>Exchangeable Image File Format — metadata embedded in digital photos including camera model, settings, date/time, and critically: GPS coordinates where the photo was taken.</td>
+      </tr>
+      <tr>
+        <td><strong>GAIA ID</strong></td>
+        <td>Google Account ID — a unique numeric identifier for a Google account. Can be used to cross-reference Google Maps reviews, YouTube channel ownership, and other Google services.</td>
+      </tr>
+      <tr>
+        <td><strong>Tor</strong></td>
+        <td>The Onion Router — a network that anonymizes internet traffic by routing it through multiple encrypted relay nodes. Project RECON routes all tool requests through Tor when <code>--tor</code> is used.</td>
+      </tr>
+      <tr>
+        <td><strong>SOCKS5</strong></td>
+        <td>A network proxy protocol that routes TCP connections through a proxy server. Used by Tor (<code>socks5://127.0.0.1:9050</code>) and supported by all RECON tools via <code>--proxy</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Data Breach</strong></td>
+        <td>An unauthorized exposure of private information — passwords, emails, personal data — from a hacked service. Tools like h8mail and holehe check whether a target's email appears in known breaches.</td>
+      </tr>
+      <tr>
+        <td><strong>WHOIS</strong></td>
+        <td>A query protocol that returns registration information for a domain or IP address: registrant name, organization, registrar, creation date, expiry date, and nameservers.</td>
+      </tr>
+      <tr>
+        <td><strong>MX Record</strong></td>
+        <td>Mail Exchange DNS record — specifies which mail servers handle email for a domain. Useful for identifying email providers and understanding infrastructure.</td>
+      </tr>
+      <tr>
+        <td><strong>SPF / DKIM</strong></td>
+        <td>Sender Policy Framework / DomainKeys Identified Mail — email authentication records stored as DNS TXT records. Reveal which services are authorized to send email for a domain.</td>
+      </tr>
+      <tr>
+        <td><strong>Plugin</strong></td>
+        <td>A Python file placed in <code>~/.recon/plugins/</code> that adds new tools or capabilities to Project RECON. Automatically loaded on startup.</td>
+      </tr>
+      <tr>
+        <td><strong>LaunchAgent (launchd)</strong></td>
+        <td>macOS background job scheduler. Project RECON installs a LaunchAgent (<code>dev.recon.autoupdate.plist</code>) that runs the auto-update script every Monday at 3:00 AM.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <div style="text-align: center; margin-top: 30px; color: #888; font-size: 9pt;">
+    <p><strong style="color: #cc0000;">Project RECON</strong> — Rapid Evidence Collection &amp; OSINT Network</p>
+    <p>Version 3.3.0 &nbsp;|&nbsp; License: CC BY-SA 4.0 &nbsp;|&nbsp; Platform: macOS 12+</p>
+    <p style="margin-top: 8px;">Built on <a href="https://github.com/WebBreacher/WhatsMyName" style="color: #cc0000;">WhatsMyName</a> by Micah Hoffman</p>
+    <p style="margin-top: 4px; font-size: 8pt; color: #aaa;">
+      This document contains sensitive operational information. Handle in accordance with your organization's information security policy.
+    </p>
+  </div>
+</div>
+
+</body>
+</html>

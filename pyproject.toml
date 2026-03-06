@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "project-recon"
-version = "3.0.0"
+version = "3.3.0"
 description = "Project RECON — Rapid Evidence Collection & OSINT Network. Unified forensics & OSINT workbench orchestrating 40+ tools through a single CLI."
 readme = "README.md"
 license = {text = "CC-BY-SA-4.0"}
@@ -70,6 +70,7 @@ all = [
 [project.scripts]
 wmn = "whatsmyname.cli:main"
 recon = "whatsmyname.recon_cli:main"
+spotlight = "whatsmyname.spotlight:main"
 
 [project.urls]
 Homepage = "https://github.com/newbiehackler/project-recon"

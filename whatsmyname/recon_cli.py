@@ -42,6 +42,7 @@ from whatsmyname.orchestrator import (
     export_csv,
     export_html,
     export_json,
+    export_markdown,
     run_recon,
 )
 
@@ -57,11 +58,103 @@ BANNER = r"""
 [bold #ff0000]  ┃[/bold #ff0000][#1a1a1a] ░▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒░ [/#1a1a1a][bold #ff0000]┃[/bold #ff0000]
 [bold #ff0000]  ┗[/bold #ff0000][#0d0d0d]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[/#0d0d0d][bold #ff0000]┛[/bold #ff0000]
 [#1a1a1a]  ┣━[/#1a1a1a] [bold #ff0000]▐█[/bold #ff0000] [bold #ff0000]R[/bold #ff0000][#555555]apid[/#555555] [bold #ff0000]E[/bold #ff0000][#555555]vidence[/#555555] [bold #ff0000]C[/bold #ff0000][#555555]ollection[/#555555] [bold #ff0000]&[/bold #ff0000] [bold #ff0000]O[/bold #ff0000][#555555]SINT[/#555555] [bold #ff0000]N[/bold #ff0000][#555555]etwork[/#555555]
-[#1a1a1a]  ┣━[/#1a1a1a] [bold #ff0000 on #0d0d0d] ☠ PROJECT RECON ☠ [/bold #ff0000 on #0d0d0d] [bold #ff0000]v3.0.0[/bold #ff0000]
+[#1a1a1a]  ┣━[/#1a1a1a] [bold #ff0000 on #0d0d0d] ☠ PROJECT RECON ☠ [/bold #ff0000 on #0d0d0d] [bold #ff0000]v3.3.0[/bold #ff0000]
 [#1a1a1a]  ┗━[/#1a1a1a] [#0d0d0d]█▓▒░[/#0d0d0d][bold #ff0000] ARMED [/bold #ff0000][#0d0d0d]░▒▓█[/#0d0d0d] [#333333]// One Search · Every Tool · No Mercy //[/#333333]
 """
 
 console = Console()
+
+
+# ---------------------------------------------------------------------------
+# VPN detection helper
+# ---------------------------------------------------------------------------
+
+def _detect_vpn() -> bool:
+    """Detect if a VPN tunnel is active (macOS/Linux)."""
+    import re
+    import subprocess
+    try:
+        result = subprocess.run(
+            ["ifconfig"], capture_output=True, text=True, timeout=5,
+        )
+        output = result.stdout
+        # macOS utun interfaces are VPN tunnels (utun0 = iCloud, utun1+ = VPNs)
+        # A real VPN usually shows up as utun1 or higher with an inet address
+        if re.search(r"utun[1-9]\d*.*?inet\b", output, re.DOTALL):
+            return True
+        # Linux tun/tap/wg (WireGuard) interfaces
+        if re.search(r"(?:^|\n)(?:tun|tap|wg|vpn)\d+", output):
+            return True
+    except Exception:
+        pass
+    # Fallback: check ip link on Linux
+    try:
+        result = subprocess.run(
+            ["ip", "link", "show"], capture_output=True, text=True, timeout=5,
+        )
+        if re.search(r"(?:tun|tap|wg|vpn)\d+", result.stdout):
+            return True
+    except Exception:
+        pass
+    return False
+
+
+# ---------------------------------------------------------------------------
+# Forensics concept dictionary (--explain)
+# ---------------------------------------------------------------------------
+
+FORENSICS_TERMS: dict[str, str] = {
+    "chain-of-custody": (
+        "Chain of custody is the documented, unbroken process of collecting, "
+        "handling, and transferring evidence. It proves that evidence has not "
+        "been tampered with between collection and court presentation. RECON's "
+        "--chain-of-custody flag logs every action with UTC timestamps, "
+        "SHA-256 hashes all outputs, and writes a CHAIN_OF_CUSTODY.json file."
+    ),
+    "sha256": (
+        "SHA-256 is a cryptographic hash function producing a 256-bit (64 hex char) "
+        "digest. Any change to the input — even one bit — produces a completely "
+        "different hash. RECON uses SHA-256 to prove that evidence files have not "
+        "been modified after collection."
+    ),
+    "osint": (
+        "Open Source Intelligence (OSINT) is intelligence gathered from publicly "
+        "available sources: social media, public records, domain registrations, "
+        "forums, and more. RECON automates OSINT collection across 68+ tools."
+    ),
+    "passive": (
+        "A passive tool collects information without directly contacting the "
+        "target's infrastructure. Examples: whois, shodan, cached pages. "
+        "Use --passive to run only these tools and avoid detection."
+    ),
+    "active": (
+        "An active tool sends requests directly to the target (nmap port scan, "
+        "HTTP probes). These leave traces in server logs. Use --opsec-check "
+        "to see which tools are active before running."
+    ),
+    "evidence-bag": (
+        "An evidence bag is a forensically sound container for collected evidence. "
+        "RECON's --evidence-bag creates a directory with: all raw tool outputs, "
+        "a MANIFEST.json with SHA-256 hashes, a CHAIN_OF_CUSTODY.json action log, "
+        "and a README.txt summary. This structure satisfies legal evidentiary standards."
+    ),
+    "exposure-score": (
+        "RECON's exposure score (1-100) quantifies a target's digital footprint risk. "
+        "Factors: number of unique sites (20pts), breach presence (25pts), "
+        "social media spread (15pts), category diversity (15pts), "
+        "sensitive platform presence (25pts). Use --score to calculate."
+    ),
+    "enrichment": (
+        "Enrichment adds context to raw findings. RECON's --enrich flag performs "
+        "DNS resolution, reverse DNS, and whois lookups on discovered URLs/domains, "
+        "turning raw profile URLs into actionable intelligence."
+    ),
+    "correlation": (
+        "Correlation identifies the same artefact appearing across multiple tools. "
+        "If sherlock AND wmn both find the same URL, that's a high-confidence hit. "
+        "Use --correlate to highlight these cross-tool confirmations."
+    ),
+}
 
 
 # ---------------------------------------------------------------------------
@@ -244,7 +337,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p.add_argument("--output-file", type=str, default=None, help="Custom output file path")
     p.add_argument("--no-banner", action="store_true", help="Skip the ASCII banner")
     p.add_argument("--list-tools", action="store_true", help="List all supported tools and their install status")
-    p.add_argument("-V", "--version", action="version", version="Project RECON 3.0.0 — Rapid Evidence Collection & OSINT Network")
+    p.add_argument("-V", "--version", action="version", version="Project RECON 3.3.0 — Rapid Evidence Collection & OSINT Network")
 
     # --- Scan control ---
     scan = p.add_argument_group("Scan control")
@@ -698,11 +791,41 @@ def cmd_update(extra_args: list[str] | None = None) -> None:
 # ---------------------------------------------------------------------------
 
 async def _async_main(args: argparse.Namespace) -> None:
+    import json as _json
+    import shlex as _shlex
+    import urllib.request as _urllib_request
+    from collections import defaultdict
+    from pathlib import Path as _Path
+
     input_type = None
     if args.type:
         input_type = InputType(args.type)
 
     detected = input_type or detect_input_type(args.target)
+
+    # --- OpSec check (pre-scan) ---
+    if args.opsec_check:
+        from whatsmyname.tool_catalog import TOOL_CATALOG
+        active_names = {e.name.lower() for e in TOOL_CATALOG if not e.passive}
+        all_tools_tmp = build_tool_configs()
+        applicable_tmp = [
+            t for t in all_tools_tmp
+            if detected in t.input_types and t.enabled
+            and t.name.lower() in active_names
+        ]
+        if applicable_tmp:
+            console.print("[bold yellow]\u26a0  OpSec Warning: these tools actively contact the target:[/bold yellow]")
+            for t in applicable_tmp:
+                console.print(f"  [red]\u26a0[/red]  {t.name} ({t.command})")
+            console.print("[dim]Use --passive to exclude them.  Use --dry-run to preview commands.[/dim]\n")
+
+    # --- VPN check (pre-scan) ---
+    if args.vpn_check:
+        if not _detect_vpn():
+            console.print("[bold red]\u2717  VPN not detected. Refusing to run (--vpn-check requires an active VPN).[/bold red]")
+            console.print("[dim]Connect to a VPN, then re-run.  Remove --vpn-check to bypass.[/dim]")
+            sys.exit(1)
+        console.print("[green]\u2713  VPN detected[/green]")
 
     # --- Dry run ---
     if args.dry_run:
@@ -711,10 +834,18 @@ async def _async_main(args: argparse.Namespace) -> None:
         if args.tools:
             override = {n.strip().lower() for n in args.tools.split(",")}
             applicable = [t for t in applicable if t.name.lower() in override]
+        if args.passive:
+            from whatsmyname.tool_catalog import TOOL_CATALOG
+            passive_names = {e.name.lower() for e in TOOL_CATALOG if e.passive}
+            applicable = [t for t in applicable if t.name.lower() in passive_names]
 
-        console.print("[bold]Dry Run — would execute:[/bold]")
+        console.print("[bold]Dry Run \u2014 would execute:[/bold]")
         console.print(f"[bold]Target:[/bold]  {args.target}")
         console.print(f"[bold]Type:[/bold]    {detected.value}")
+        if args.deep:
+            console.print("[dim]Mode: DEEP (2x timeouts)[/dim]")
+        if args.quick:
+            console.print("[dim]Mode: QUICK (top 3 fastest)[/dim]")
         console.print()
         for t in applicable:
             try:
@@ -740,7 +871,25 @@ async def _async_main(args: argparse.Namespace) -> None:
     if detected == InputType.USERNAME and email_expand:
         console.print("[bold]Email expansion:[/bold] ON")
 
+    if args.deep:
+        console.print("[bold]Mode:[/bold]    [yellow]DEEP[/yellow] (2x timeouts, all tools)")
+    if args.quick:
+        console.print("[bold]Mode:[/bold]    [cyan]QUICK[/cyan] (top 3 fastest tools)")
+    if args.passive:
+        console.print("[bold]Mode:[/bold]    [green]PASSIVE[/green] (non-intrusive tools only)")
+    if args.jitter:
+        console.print("[dim]Jitter: ON (random delays between tool launches)[/dim]")
+
     console.print()
+
+    # Proxy / Tor
+    proxy_url: str | None = None
+    if args.tor:
+        proxy_url = "socks5://127.0.0.1:9050"
+        console.print("[dim]Routing through Tor (socks5://127.0.0.1:9050)[/dim]")
+    elif args.proxy:
+        proxy_url = args.proxy
+        console.print(f"[dim]Routing through proxy: {proxy_url}[/dim]")
 
     # Track tool states for live display
     lock = Lock()
@@ -809,6 +958,13 @@ async def _async_main(args: argparse.Namespace) -> None:
                 timeout_override=args.timeout,
                 on_start=on_start,
                 on_finish=on_finish,
+                passive_only=args.passive,
+                deep=args.deep,
+                quick=args.quick,
+                parallel_limit=args.parallel,
+                jitter=args.jitter,
+                retries=args.retries,
+                proxy_url=proxy_url,
             )
         finally:
             display_task.cancel()
@@ -820,7 +976,46 @@ async def _async_main(args: argparse.Namespace) -> None:
     total_time = time.monotonic() - start_time
     console.print(f"\n[bold]Scan completed in {total_time:.1f}s[/bold]\n")
 
+    # --- Filter findings (before display) ---
+    if args.filter:
+        flt = args.filter.lower()
+        if "=" in flt:
+            key, val = flt.split("=", 1)
+            if key == "category":
+                report.all_findings = [
+                    f for f in report.all_findings if val in f.category.lower()
+                ]
+            elif key == "tool":
+                report.all_findings = [
+                    f for f in report.all_findings if val in f.source_tool.lower()
+                ]
+            elif key == "confidence":
+                report.all_findings = [
+                    f for f in report.all_findings if val in f.confidence.lower()
+                ]
+            elif key == "site":
+                report.all_findings = [
+                    f for f in report.all_findings if val in f.site_name.lower()
+                ]
+        else:
+            report.all_findings = [
+                f for f in report.all_findings
+                if flt in f.category.lower() or flt in f.site_name.lower()
+            ]
+        console.print(f"[dim]Filter applied: {args.filter} ({len(report.all_findings)} findings remaining)[/dim]")
+
     _print_results(report)
+
+    # --- Raw stdout display ---
+    if args.raw:
+        console.print("\n[bold]Raw Tool Output:[/bold]")
+        for t in report.tools_run:
+            if t.raw_output.strip():
+                console.print(f"\n  [bold red]--- {t.tool_name} (stdout) ---[/bold red]")
+                console.print(t.raw_output[:8000])
+            if t.raw_stderr.strip():
+                console.print(f"  [bold dim]--- {t.tool_name} (stderr) ---[/bold dim]")
+                console.print(t.raw_stderr[:2000])
 
     # --- Exposure score ---
     if args.score:
@@ -841,6 +1036,73 @@ async def _async_main(args: argparse.Namespace) -> None:
             border_style=color,
         ))
 
+    # --- Enrichment ---
+    if args.enrich:
+        from whatsmyname.enrichment import enrich_findings
+        deduped = report.deduplicated_findings()
+        findings_dicts = [
+            {"url": f.url, "site_name": f.site_name, "category": f.category,
+             "source_tool": f.source_tool}
+            for f in deduped
+        ]
+        console.print("\n[dim]Enriching findings (DNS / whois)...[/dim]")
+        enriched = enrich_findings(findings_dicts, max_lookups=20)
+        console.print("\n[bold]Enrichment Results:[/bold]")
+        for ef in enriched:
+            enr = ef.get("enrichment", {})
+            if enr and any(enr.values()):
+                parts = []
+                if enr.get("domain"):
+                    parts.append(f"domain={enr['domain']}")
+                if enr.get("ip"):
+                    parts.append(f"ip={enr['ip']}")
+                if enr.get("reverse_dns"):
+                    parts.append(f"rdns={enr['reverse_dns']}")
+                if parts:
+                    console.print(
+                        f"  [green]{ef['site_name'] or ef['url'][:50]}[/green]  "
+                        f"[dim]{', '.join(parts)}[/dim]"
+                    )
+
+    # --- Correlate findings across tools ---
+    if args.correlate:
+        url_to_tools: dict[str, list[str]] = defaultdict(list)
+        for f in report.all_findings:
+            if f.url:
+                url_to_tools[f.url.rstrip("/").lower()].append(f.source_tool)
+        correlated = {url: tools for url, tools in url_to_tools.items() if len(set(tools)) > 1}
+        if correlated:
+            console.print(f"\n[bold]Cross-tool correlations ({len(correlated)} confirmed across 2+ tools):[/bold]")
+            for url, tools in sorted(correlated.items(), key=lambda x: -len(x[1])):
+                tools_str = ", ".join(sorted(set(tools)))
+                console.print(f"  [green]\u2713[/green] {url}")
+                console.print(f"    [dim]Confirmed by: {tools_str}[/dim]")
+        else:
+            console.print("\n[dim]No cross-tool URL correlations found.[/dim]")
+
+    # --- Diff vs previous scan ---
+    if args.diff:
+        try:
+            prev_data = _json.loads(_Path(args.diff).read_text())
+            prev_urls = {f["url"] for f in prev_data.get("findings", []) if f.get("url")}
+            deduped_now = report.deduplicated_findings()
+            current_urls = {f.url for f in deduped_now if f.url}
+            new_findings = [f for f in deduped_now if f.url and f.url not in prev_urls]
+            gone_urls = prev_urls - current_urls
+            console.print(f"\n[bold]Diff vs {args.diff}:[/bold]")
+            console.print(f"  New findings:   [green]+{len(new_findings)}[/green]")
+            console.print(f"  No longer seen: [red]-{len(gone_urls)}[/red]")
+            if new_findings:
+                console.print("  [bold]New:[/bold]")
+                for f in new_findings[:15]:
+                    console.print(f"    [green]+[/green] {f.site_name or f.url}  [dim]{f.source_tool}[/dim]")
+            if gone_urls:
+                console.print("  [bold]Gone:[/bold]")
+                for url in list(gone_urls)[:15]:
+                    console.print(f"    [red]-[/red] {url}")
+        except Exception as e:
+            console.print(f"[red]Could not load diff file {args.diff}: {e}[/red]")
+
     # --- Post-scan suggestions ---
     if args.discover:
         from whatsmyname.workflows import suggest_after_scan
@@ -849,11 +1111,12 @@ async def _async_main(args: argparse.Namespace) -> None:
         suggestions = suggest_after_scan(detected.value, tools_run, cats)
 
         if suggestions["next_suggestions"]:
-            console.print("\n[bold]💡 Suggested next tools:[/bold]")
+            console.print("\n[bold]\U0001f4a1 Suggested next tools:[/bold]")
             for s in suggestions["next_suggestions"]:
-                console.print(f"  [red]{s['tool']}[/red] — {s['reason']}")
+                console.print(f"  [red]{s['tool']}[/red] \u2014 {s['reason']}")
 
-    # --- Export ---
+    # --- Export (json / csv / html) ---
+    out_path: str | None = None
     if args.output:
         ext = args.output
         default_name = f"{args.target}.{ext}"
@@ -871,50 +1134,157 @@ async def _async_main(args: argparse.Namespace) -> None:
         if args.open and ext == "html":
             webbrowser.open(f"file://{os.path.abspath(out_path)}")
 
-    # --- Session tracking ---
-    if args.session:
-        from datetime import datetime, timezone
+    # --- Markdown export ---
+    if args.markdown:
+        md_path = args.output_file.replace(".", "_", 1) + ".md" if args.output_file else f"{args.target}.md"
+        export_markdown(report, md_path)
+        console.print(f"[green]Markdown report saved to {md_path}[/green]")
 
-        from whatsmyname.sessions import SessionRun, create_or_resume, save_session
-        session = create_or_resume(args.session)
-        if args.case_id:
-            session.case_id = args.case_id
-        if args.examiner:
-            session.examiner = args.examiner
-        run = SessionRun(
-            timestamp=datetime.now(timezone.utc).isoformat(),
-            target=args.target,
-            input_type=detected.value,
-            tools_run=[t.tool_name for t in report.tools_run if t.status != "not_installed"],
-            findings_count=len(report.all_findings),
-            categories_found=list(report.by_category().keys()),
-            elapsed=total_time,
-            notes=args.notes or "",
+    # --- Save raw tool outputs ---
+    if args.save_raw:
+        raw_dir = _Path(args.save_raw)
+        raw_dir.mkdir(parents=True, exist_ok=True)
+        saved = 0
+        for t in report.tools_run:
+            if t.raw_output.strip():
+                (raw_dir / f"{t.tool_name}_stdout.txt").write_text(t.raw_output)
+                saved += 1
+            if t.raw_stderr.strip():
+                (raw_dir / f"{t.tool_name}_stderr.txt").write_text(t.raw_stderr)
+        console.print(f"[green]Raw outputs saved to {args.save_raw}/ ({saved} files)[/green]")
+
+    # --- Evidence bag (chain of custody + forensic hashing) ---
+    bag = None
+    if args.evidence_bag or args.chain_of_custody:
+        from datetime import datetime as _dt, timezone as _tz
+        from whatsmyname.evidence import EvidenceBag
+
+        if args.evidence_bag:
+            bag_path = args.evidence_bag
+        else:
+            ts = _dt.now(_tz.utc).strftime("%Y%m%d_%H%M%S")
+            bag_path = str(_Path.home() / ".recon" / "evidence" / f"{args.target}_{ts}")
+
+        bag = EvidenceBag(
+            bag_path,
             case_id=args.case_id or "",
+            examiner=args.examiner or "",
         )
-        session.add_run(run)
-        deduped = report.deduplicated_findings()
-        session.add_findings([
-            {"url": f.url, "site_name": f.site_name, "category": f.category,
-             "source_tool": f.source_tool}
-            for f in deduped
-        ])
-        if args.notes:
-            session.add_note(args.notes)
-        save_session(session)
-        console.print(f"\n[green]Session '{args.session}' saved ({session.total_runs} runs, {session.total_findings} findings)[/green]")
+        console.print(f"\n[dim]Evidence bag: {bag_path}[/dim]")
 
-    # --- Desktop notification ---
-    if args.notify:
+        # Store raw tool outputs
+        for t in report.tools_run:
+            if t.raw_output.strip() or t.raw_stderr.strip():
+                bag.store_raw_output(t.tool_name, t.raw_output, t.raw_stderr or t.error)
+
+        # Store the JSON report inside the evidence bag
+        import io as _io
+        rpt_buf = _io.StringIO()
+        deduped_eb = report.deduplicated_findings()
+        rpt_data = {
+            "target": report.target,
+            "input_type": report.input_type,
+            "timestamp": report.timestamp,
+            "case_id": args.case_id or "",
+            "examiner": args.examiner or "",
+            "findings": [
+                {"source": f.source_tool, "site": f.site_name, "url": f.url,
+                 "category": f.category, "confidence": f.confidence}
+                for f in deduped_eb
+            ],
+        }
+        bag.store_report("recon_report.json", _json.dumps(rpt_data, indent=2))
+
+        manifest_path = bag.finalize()
+        console.print(Panel(
+            f"[bold green]Evidence bag finalised[/bold green]\n"
+            f"Path:       {bag_path}\n"
+            f"Artifacts:  {len(bag.manifest)}\n"
+            f"Manifest:   {manifest_path.name}\n"
+            f"Chain log:  CHAIN_OF_CUSTODY.json\n"
+            f"SHA-256:    {EvidenceBag.hash_file(manifest_path)}",
+            title="\U0001f512 Forensic Evidence Bag",
+            border_style="green",
+        ))
+
+    # --- Hash verify ---
+    if args.hash_verify:
+        if bag is not None:
+            failures = bag.verify_integrity()
+            if not failures:
+                console.print(f"[green]\u2713  All {len(bag.manifest)} evidence files verified (SHA-256 match)[/green]")
+            else:
+                console.print(f"[bold red]\u2717  {len(failures)} integrity failure(s)![/bold red]")
+                for fail in failures:
+                    console.print(f"  [red]\u2717[/red] {fail['file']}: {fail['error']}")
+        elif out_path:
+            # Hash the output file directly
+            from whatsmyname.evidence import EvidenceBag as _EB
+            h = _EB.hash_file(_Path(out_path))
+            console.print(f"[bold]SHA-256 of {out_path}:[/bold] {h}")
+        else:
+            console.print("[dim]--hash-verify: no output file or evidence bag to verify. Use with --output or --evidence-bag.[/dim]")
+
+    # --- PDF export ---
+    if args.pdf:
+        if out_path and args.output == "html":
+            pdf_path = out_path.replace(".html", ".pdf")
+            try:
+                subprocess.run(["weasyprint", out_path, pdf_path], check=True, capture_output=True)
+                console.print(f"[green]PDF saved to {pdf_path}[/green]")
+            except Exception:
+                try:
+                    subprocess.run(["wkhtmltopdf", out_path, pdf_path], check=True, capture_output=True)
+                    console.print(f"[green]PDF saved to {pdf_path}[/green]")
+                except Exception:
+                    console.print("[yellow]PDF generation requires weasyprint or wkhtmltopdf.[/yellow]")
+                    console.print("[dim]Install: pip install weasyprint  OR  brew install wkhtmltopdf[/dim]")
+        else:
+            console.print("[yellow]--pdf requires --output html[/yellow]")
+
+    # --- Webhook ---
+    if args.webhook:
         try:
-            deduped = report.deduplicated_findings()
-            subprocess.run([
-                "osascript", "-e",
-                f'display notification "Found {len(deduped)} results for {args.target}" '
-                f'with title "Project RECON"',
-            ], capture_output=True)
-        except Exception:
-            pass
+            deduped_wh = report.deduplicated_findings()
+            payload = {
+                "target": args.target,
+                "findings_count": len(deduped_wh),
+                "categories": list(report.by_category().keys()),
+                "timestamp": report.timestamp,
+                "elapsed_seconds": round(total_time, 1),
+            }
+            data = _json.dumps(payload).encode("utf-8")
+            req = _urllib_request.Request(
+                args.webhook, data=data,
+                headers={"Content-Type": "application/json", "User-Agent": "ProjectRECON/3.3"},
+            )
+            with _urllib_request.urlopen(req, timeout=10) as resp:
+                console.print(f"[green]Webhook delivered: {args.webhook} (HTTP {resp.status})[/green]")
+        except Exception as e:
+            console.print(f"[red]Webhook failed: {e}[/red]")
+
+    # --- On-finding command ---
+    if args.on_finding:
+        deduped_of = report.deduplicated_findings()
+        for f in deduped_of:
+            env = {
+                **os.environ,
+                "RECON_TARGET": args.target,
+                "RECON_FINDING_URL": f.url or "",
+                "RECON_FINDING_SITE": f.site_name or "",
+                "RECON_FINDING_TOOL": f.source_tool or "",
+                "RECON_FINDING_CATEGORY": f.category or "",
+                "RECON_FINDING_CONFIDENCE": f.confidence or "",
+            }
+            try:
+                subprocess.run(
+                    _shlex.split(args.on_finding),
+                    env=env, timeout=15, capture_output=True,
+                )
+            except Exception:
+                pass
+        console.print(f"[dim]on-finding: executed '{args.on_finding}' for {len(deduped_of)} findings[/dim]")
+
 
 
 # ---------------------------------------------------------------------------
@@ -922,11 +1292,14 @@ async def _async_main(args: argparse.Namespace) -> None:
 # ---------------------------------------------------------------------------
 
 def main(argv: list[str] | None = None) -> None:
+    global console  # Allow --no-color to replace the module-level console
+
     # Handle subcommands before argparse
     raw_args = argv if argv is not None else sys.argv[1:]
 
     if raw_args and raw_args[0] in ("inventory", "learn", "suggest", "categories",
-                                     "workflows", "templates", "plugins", "update", "shell"):
+                                     "workflows", "templates", "plugins", "update", "shell",
+                                     "explain"):
         subcmd = raw_args[0]
 
         if subcmd == "inventory":
@@ -959,6 +1332,24 @@ def main(argv: list[str] | None = None) -> None:
                     tools_str += f" +{len(t['tools']) - 5} more"
                 table.add_row(t["name"], t["description"], tools_str, ", ".join(t["tags"]))
             console.print(table)
+        elif subcmd == "explain":
+            if len(raw_args) < 2:
+                console.print("[bold]Known forensics terms:[/bold]")
+                for term in sorted(FORENSICS_TERMS):
+                    console.print(f"  [red]{term}[/red]")
+                console.print("\n[dim]Usage: recon explain <term>[/dim]")
+            else:
+                term = raw_args[1].lower()
+                explanation = FORENSICS_TERMS.get(term)
+                if explanation:
+                    console.print(Panel(
+                        explanation,
+                        title=f"[red]{term}[/red]",
+                        border_style="dim",
+                    ))
+                else:
+                    console.print(f"[yellow]Term '{term}' not in dictionary.[/yellow]")
+                    console.print("[dim]Known terms: " + ", ".join(sorted(FORENSICS_TERMS)) + "[/dim]")
         elif subcmd == "plugins":
             _handle_plugins(raw_args[1:])
         elif subcmd == "update":
@@ -971,8 +1362,23 @@ def main(argv: list[str] | None = None) -> None:
     # Standard argparse for scan mode
     args = parse_args(argv)
 
+    # --- No-color mode: replace module console ---
+    if args.no_color:
+        console = Console(no_color=True, highlight=False)
+
     if not args.no_banner:
         console.print(BANNER)
+
+    # --- --explain flag (alternate form) ---
+    if args.explain:
+        term = args.explain.lower()
+        explanation = FORENSICS_TERMS.get(term)
+        if explanation:
+            console.print(Panel(explanation, title=f"[red]{term}[/red]", border_style="dim"))
+        else:
+            console.print(f"[yellow]Term '{term}' not in dictionary.[/yellow]")
+            console.print("[dim]Known terms: " + ", ".join(sorted(FORENSICS_TERMS)) + "[/dim]")
+        return
 
     if args.list_tools:
         cmd_list_tools()
@@ -981,6 +1387,34 @@ def main(argv: list[str] | None = None) -> None:
     # Handle --cheatsheet
     if args.cheatsheet:
         cmd_learn(args.cheatsheet)
+        return
+
+    # --- Multi-target: --file ---
+    if args.file:
+        from pathlib import Path as _P
+        targets = [t.strip() for t in _P(args.file).read_text().splitlines() if t.strip()]
+        if not targets:
+            console.print("[red]No targets found in file.[/red]")
+            sys.exit(1)
+        for target in targets:
+            console.print(f"\n[bold red]\u25ba Target: {target}[/bold red]")
+            args.target = target
+            asyncio.run(_async_main(args))
+        return
+
+    # --- Multi-target: --stdin ---
+    if args.stdin:
+        import select
+        targets = []
+        if select.select([sys.stdin], [], [], 0)[0]:
+            targets = [t.strip() for t in sys.stdin.read().splitlines() if t.strip()]
+        if not targets:
+            console.print("[red]No targets from stdin.[/red]")
+            sys.exit(1)
+        for target in targets:
+            console.print(f"\n[bold red]\u25ba Target: {target}[/bold red]")
+            args.target = target
+            asyncio.run(_async_main(args))
         return
 
     if not args.target:
@@ -1005,7 +1439,7 @@ def main(argv: list[str] | None = None) -> None:
             args.passive = True
         if not args.no_email_expand:
             args.no_email_expand = not tmpl.email_expand
-        console.print(f"[dim]Using template: {tmpl.name} — {tmpl.description}[/dim]")
+        console.print(f"[dim]Using template: {tmpl.name} \u2014 {tmpl.description}[/dim]")
 
     asyncio.run(_async_main(args))
 
