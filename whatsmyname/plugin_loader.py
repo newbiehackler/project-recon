@@ -23,6 +23,7 @@ Example plugin (~/.recon/plugins/my_tool.py):
 from __future__ import annotations
 
 import importlib.util
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -46,9 +47,67 @@ def discover_plugins() -> list[Path]:
     )
 
 
+def _recon_tools_to_configs(tools: list[dict]) -> list[Any]:
+    """
+    Convert a RECON_TOOLS list-of-dicts into ToolConfig objects.
+    This lets plugins use the simpler dict format without needing
+    to import ToolConfig/InputType themselves.
+    """
+    from whatsmyname.orchestrator import ToolConfig, InputType, Finding
+
+    _type_map = {
+        "username": InputType.USERNAME,
+        "email": InputType.EMAIL,
+        "phone": InputType.PHONE,
+    }
+    configs = []
+    for t in tools:
+        if not isinstance(t, dict):
+            continue
+        name = t.get("name", "")
+        command = t.get("command", name)
+        description = t.get("description", "")
+        raw_types = t.get("input_types", ["username"])
+        input_types = [_type_map[s] for s in raw_types if s in _type_map]
+        if not input_types:
+            input_types = [InputType.USERNAME]
+
+        args_tmpl = t.get("args_template", ["{target}"])
+        category = t.get("category", "Plugin")
+        timeout = int(t.get("timeout", 60))
+
+        def _build_args(inp: str, td: str, tmpl: list = args_tmpl) -> list[str]:
+            return [a.replace("{target}", inp) for a in tmpl]
+
+        def _parse(out: str, err: str, td: str, n: str = name, cat: str = category) -> list[Finding]:
+            findings = []
+            for line in out.splitlines():
+                m = re.search(r"https?://\S+", line)
+                if m:
+                    findings.append(Finding(
+                        source_tool=n, site_name="", url=m.group(0).rstrip(","),
+                        category=cat,
+                    ))
+            return findings
+
+        configs.append(ToolConfig(
+            name=name,
+            command=command,
+            description=description,
+            input_types=input_types,
+            build_args=_build_args,
+            parse_output=_parse,
+            timeout=timeout,
+        ))
+    return configs
+
+
 def load_plugin(path: Path) -> list[Any]:
     """
-    Load a single plugin file and call its register() function.
+    Load a single plugin file.
+    Supports two formats:
+      1. register() function returning list[ToolConfig]  (advanced)
+      2. RECON_TOOLS list-of-dicts                       (simple / marketplace)
     Returns a list of ToolConfig objects, or empty list on failure.
     """
     try:
@@ -62,10 +121,16 @@ def load_plugin(path: Path) -> list[Any]:
         sys.modules[spec.name] = module
         spec.loader.exec_module(module)
 
+        # Format 1: register() function
         if hasattr(module, "register") and callable(module.register):
             result = module.register()
             if isinstance(result, list):
                 return result
+
+        # Format 2: RECON_TOOLS list-of-dicts
+        if hasattr(module, "RECON_TOOLS") and isinstance(module.RECON_TOOLS, list):
+            return _recon_tools_to_configs(module.RECON_TOOLS)
+
         return []
 
     except Exception as e:
